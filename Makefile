@@ -1,4 +1,4 @@
-.PHONY: deploy-factory-local
+.PHONY: deploy-factory-local deploy-factory-dry deploy-factory-cantotest build test
 .DEFAULT_GOAL := none
 
 none:

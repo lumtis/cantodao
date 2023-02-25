@@ -3,6 +3,3 @@ src = 'src'
 out = 'out'
 libs = ['lib']
 solc = "0.8.17"
-
-[rpc_endpoints]
-cantotest = "https://eth.plexnode.wtf/"
