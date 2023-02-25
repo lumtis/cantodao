@@ -16,12 +16,9 @@ Cantodao is a DAO system built on Canto network initiated during [Canto Online H
 
 Cantodao is fully open-source, impregnated with the freedom culture of Canto, and is aimed to become the simplest and easiest-to-use DAO system that leverages Canto features such as CSR for contracts launched by organizations.
 
+Interface source code is available at https://github.com/lumtis/cantodao-interface
+
 ## Architecture
-
-- Smart contracts: built using Hardhat framework and tooling
-- Front-end: built under `/interface` using React, Chakra UI, and wagmi libraries.
-
-## Smart contracts
 
 The smart contract architecture heavily relies on the governance utilities built by OpenZeppelin. It adds more modifications to allow better UX and simplicity.
 
@@ -54,39 +51,33 @@ This is a simple factory contract to deploy a new DAO with all the components. I
 <img src="images/contracts.png" alt="" width="600" />
 </div>
 
-## Front-end
+## Commands
 
-The front-end interface offers the basic functionalities to create and manage token based DAOs.
-The executor smart contract already supports any proposal actions. However, the front-end interface currently only supports the creation of fund transfer proposals. Proposal to transfer DAOs from the DAO to an address.
-The explore page presents a curated list of DAOs.
+The project uses the Foundry tooling: https://getfoundry.sh/
 
-## Testing
+Run local network
+
+```
+anvil
+```
 
 Build and test smart contracts
 
 ```
-yarn build
-yarn test
+make test
 ```
 
-Deploy the smart contracts locally
+Deploy the DAO factory locally
 
 ```
-yarn network &
-yarn deploy:local
+make deploy-factory-local
 ```
 
-Run interface locally
+Deploy the DAO factory on testnet
 
 ```
-yarn dev
-```
-
-Running the dev command will automatically connects to the local network. To use Canto testnet, you can build and start the app in production:
-
-```
-yarn build
-yarn start
+export PRIVATE_KEY=[your private key]
+make deploy-factory-testnet
 ```
 
 ## Plan
