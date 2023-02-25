@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: APACHE-2.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "./DAOGovernor.sol";
+
+interface IDAOProposer {
+    function setGovernor(DAOGovernor _governor) external;
+}
 
 // DAOProposer is a simple permissionless proposer contract for DAOGovernor that stores proposal on-chain
 contract DAOProposer {

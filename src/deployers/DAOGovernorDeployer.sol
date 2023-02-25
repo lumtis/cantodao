@@ -1,17 +1,28 @@
 // SPDX-License-Identifier: APACHE-2.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "openzeppelin-contracts/contracts/governance/utils/IVotes.sol";
 import "openzeppelin-contracts/contracts/governance/TimelockController.sol";
 
 import "../DAOGovernor.sol";
 
+interface IDAOGovernorDeployer {
+    function deployDAOGovernor(
+        string memory _daoName,
+        string memory _daoImage,
+        IVotes _token,
+        address _proposer,
+        uint256 _quorumFraction,
+        uint256 _votingDelay,
+        uint256 _votingPeriod
+    ) external returns (DAOGovernor);
+}
+
 contract DAOGovernorDeployer {
     function deployDAOGovernor(
         string memory _daoName,
         string memory _daoImage,
         IVotes _token,
-        TimelockController _executor,
         address _proposer,
         uint256 _quorumFraction,
         uint256 _votingDelay,
@@ -22,7 +33,6 @@ contract DAOGovernorDeployer {
             _daoName,
             _daoImage,
             _token,
-            _executor,
             _proposer,
             _quorumFraction,
             _votingDelay,

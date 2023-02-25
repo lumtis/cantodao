@@ -1,19 +1,17 @@
 // SPDX-License-Identifier: APACHE-2.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "openzeppelin-contracts/contracts/governance/Governor.sol";
-import "openzeppelin-contracts/contracts/governance/compatibility/GovernorCompatibilityBravo.sol";
 import "openzeppelin-contracts/contracts/governance/extensions/GovernorVotes.sol";
 import "openzeppelin-contracts/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "openzeppelin-contracts/contracts/governance/extensions/GovernorTimelockControl.sol";
+import "openzeppelin-contracts/contracts/governance/extensions/GovernorCountingSimple.sol";
 
 // An implementation of governance for DAOs
 contract DAOGovernor is
     Governor,
-    GovernorCompatibilityBravo,
     GovernorVotes,
     GovernorVotesQuorumFraction,
-    GovernorTimelockControl
+    GovernorCountingSimple
 {
     // DAO parameters
     uint256 private _votingDelay_;
@@ -27,7 +25,6 @@ contract DAOGovernor is
         string memory _name,
         string memory _imageURL,
         IVotes _token,
-        TimelockController _timelock,
         address _proposer,
         uint256 _quorumFraction,
         uint256 _votingDelay,
@@ -36,7 +33,6 @@ contract DAOGovernor is
         Governor(_name)
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(_quorumFraction)
-        GovernorTimelockControl(_timelock)
     {
         _votingDelay_ = _votingDelay;
         _votingPeriod_ = _votingPeriod;
@@ -71,12 +67,7 @@ contract DAOGovernor is
         uint256[] memory values,
         bytes[] memory calldatas,
         string memory description
-    )
-        public
-        override(Governor, GovernorCompatibilityBravo, IGovernor)
-        onlyProposer
-        returns (uint256)
-    {
+    ) public override(Governor) onlyProposer returns (uint256) {
         uint256 proposalID = super.propose(
             targets,
             values,
@@ -90,12 +81,7 @@ contract DAOGovernor is
     // The functions below are overrides required by Solidity
     function state(
         uint256 proposalId
-    )
-        public
-        view
-        override(Governor, IGovernor, GovernorTimelockControl)
-        returns (ProposalState)
-    {
+    ) public view override(Governor) returns (ProposalState) {
         return super.state(proposalId);
     }
 
@@ -105,7 +91,7 @@ contract DAOGovernor is
         uint256[] memory values,
         bytes[] memory calldatas,
         bytes32 descriptionHash
-    ) internal override(Governor, GovernorTimelockControl) {
+    ) internal override(Governor) {
         super._execute(proposalId, targets, values, calldatas, descriptionHash);
     }
 
@@ -114,27 +100,17 @@ contract DAOGovernor is
         uint256[] memory values,
         bytes[] memory calldatas,
         bytes32 descriptionHash
-    ) internal override(Governor, GovernorTimelockControl) returns (uint256) {
+    ) internal override(Governor) returns (uint256) {
         return super._cancel(targets, values, calldatas, descriptionHash);
     }
 
-    function _executor()
-        internal
-        view
-        override(Governor, GovernorTimelockControl)
-        returns (address)
-    {
+    function _executor() internal view override(Governor) returns (address) {
         return super._executor();
     }
 
     function supportsInterface(
         bytes4 interfaceId
-    )
-        public
-        view
-        override(Governor, IERC165, GovernorTimelockControl)
-        returns (bool)
-    {
+    ) public view override(Governor) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }

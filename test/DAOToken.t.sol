@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: APACHE-2.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 import "../src/DAOToken.sol";
@@ -25,7 +25,7 @@ contract DAOTokenTest is Test {
         token.mint(1000);
         assertEq(token.balanceOf(token.owner()), balance + 1000);
     }
-    
+
     function testFailNonOwnerMint() public {
         vm.prank(address(0));
         token.mint(1000);

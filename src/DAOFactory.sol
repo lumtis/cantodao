@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: APACHE-2.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "openzeppelin-contracts/contracts/governance/utils/IVotes.sol";
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "openzeppelin-contracts/contracts/governance/TimelockController.sol";
 
-import "./interfaces/IDAOProposerDeployer.sol";
-import "./interfaces/IDAOGovernorDeployer.sol";
-import "./interfaces/IDAOExecutorDeployer.sol";
-import "./interfaces/IDAOTokenDeployer.sol";
-import "./interfaces/IDAOProposer.sol";
-
+import "./deployers/DAOGovernorDeployer.sol";
+import "./deployers/DAOTokenDeployer.sol";
+import "./deployers/DAOProposerDeployer.sol";
 import "./DAOGovernor.sol";
 
 // Define constant for quorum fraction, voting delay, and voting period
@@ -21,7 +18,6 @@ uint256 constant DEFAULT_VOTING_PERIOD = 360; // around 30 minutes
 contract DAOFactory {
     // Deployer contracts
     IDAOGovernorDeployer public governorDeployer;
-    IDAOExecutorDeployer public executorDeployer;
     IDAOTokenDeployer public tokenDeployer;
     IDAOProposerDeployer public proposerDeployer;
 
@@ -31,18 +27,15 @@ contract DAOFactory {
         address indexed deployer,
         address dao,
         address token,
-        address executor,
         address proposer
     );
 
     constructor(
         IDAOGovernorDeployer _governorDeployer,
-        IDAOExecutorDeployer _executorDeployer,
         IDAOTokenDeployer _tokenDeployer,
         IDAOProposerDeployer _proposerDeployer
     ) {
         governorDeployer = _governorDeployer;
-        executorDeployer = _executorDeployer;
         tokenDeployer = _tokenDeployer;
         proposerDeployer = _proposerDeployer;
     }
@@ -53,7 +46,7 @@ contract DAOFactory {
         string memory _tokenName,
         string memory _tokenSymbol,
         uint256 _tokenInitialSupply
-    ) external returns (address) {
+    ) external returns (address, address, address) {
         // Deploy proposer
         address proposer = proposerDeployer.deployDAOProposer();
 
@@ -65,17 +58,11 @@ contract DAOFactory {
             _tokenInitialSupply
         );
 
-        // Deploy executor
-        TimelockController executor = executorDeployer.deployDAOExecutor(
-            address(this)
-        );
-
         // Deploy the DAO governor
         DAOGovernor dao = governorDeployer.deployDAOGovernor(
             _daoName,
             _daoImage,
             IVotes(token),
-            executor,
             proposer,
             DEFAULT_QUORUM_FRACTION,
             DEFAULT_VOTING_DELAY,
@@ -85,14 +72,8 @@ contract DAOFactory {
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
 
-        // Transfer ownership of the token to the DAO executor
-        Ownable(token).transferOwnership(address(executor));
-
-        // Grant roles for executors to the DAO in DAOExecutor
-        executor.grantRole(executor.PROPOSER_ROLE(), address(dao));
-        executor.grantRole(executor.EXECUTOR_ROLE(), address(dao));
-        executor.renounceRole(executor.PROPOSER_ROLE(), address(this));
-        executor.renounceRole(executor.TIMELOCK_ADMIN_ROLE(), address(this));
+        // Transfer ownership of the token to the DAO
+        Ownable(token).transferOwnership(address(dao));
 
         // Add the DAO to the array of DAOs
         daos.push(address(dao));
@@ -101,11 +82,10 @@ contract DAOFactory {
             msg.sender,
             address(dao),
             address(token),
-            address(executor),
             address(proposer)
         );
 
-        return address(this);
+        return (address(this), address(dao), address(token));
     }
 
     // Get a DAO from its index
