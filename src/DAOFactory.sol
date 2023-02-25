@@ -85,7 +85,7 @@ contract DAOFactory {
             address(proposer)
         );
 
-        return (address(this), address(dao), address(token));
+        return (address(dao), address(token), address(proposer));
     }
 
     // Get a DAO from its index
