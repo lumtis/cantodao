@@ -3,6 +3,15 @@ pragma solidity ^0.8.17;
 
 import "./DAOGovernor.sol";
 
+interface IProposalReceiver {
+    function propose(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory calldatas,
+        string memory description
+    ) external returns (uint256);
+}
+
 interface IDAOProposer {
     function setGovernor(DAOGovernor _governor) external;
 }
@@ -17,14 +26,14 @@ contract DAOProposer {
     }
 
     // Address of the DAO governor
-    DAOGovernor public daoGovernor;
+    IProposalReceiver public daoGovernor;
 
     uint256 public proposalCount = 0;
     mapping(uint256 => uint256) public proposalIDs;
     mapping(uint256 => ProposalContent) public proposalContents;
 
     // set the DAO governor address
-    function setGovernor(DAOGovernor _governor) external {
+    function setGovernor(IProposalReceiver _governor) external {
         // check the address is not initialized
         require(
             address(daoGovernor) == address(0),
