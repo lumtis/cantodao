@@ -14,8 +14,8 @@ contract DAOGovernor is
     GovernorCountingSimple
 {
     // DAO parameters
-    uint256 private _votingDelay_;
-    uint256 private _votingPeriod_;
+    uint256 private daoVotingDelay;
+    uint256 private daoVotingPeriod;
 
     // DAO data
     string public imageURL;
@@ -34,8 +34,8 @@ contract DAOGovernor is
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(_quorumFraction)
     {
-        _votingDelay_ = _votingDelay;
-        _votingPeriod_ = _votingPeriod;
+        daoVotingDelay = _votingDelay;
+        daoVotingPeriod = _votingPeriod;
         imageURL = _imageURL;
         proposer = _proposer;
     }
@@ -49,11 +49,11 @@ contract DAOGovernor is
     }
 
     function votingDelay() public view override returns (uint256) {
-        return _votingDelay_;
+        return daoVotingDelay;
     }
 
     function votingPeriod() public view override returns (uint256) {
-        return _votingPeriod_;
+        return daoVotingPeriod;
     }
 
     // Proposal condition is controlled by the proposer contract
