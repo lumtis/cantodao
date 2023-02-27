@@ -56,6 +56,10 @@ contract DAOGovernor is
         return daoVotingPeriod;
     }
 
+    function quorumVotes(uint256 proposalId) public view returns (uint256) {
+        return quorum(proposalSnapshot(proposalId));
+    }
+
     // Proposal condition is controlled by the proposer contract
     function proposalThreshold() public pure override returns (uint256) {
         return 0;

@@ -31,6 +31,7 @@ contract DAOProposer {
     uint256 public proposalCount = 0;
     mapping(uint256 => uint256) public proposalIDs;
     mapping(uint256 => ProposalContent) public proposalContents;
+    mapping(uint256 => address) public proposalCreator;
 
     // set the DAO governor address
     function setGovernor(IProposalReceiver _governor) external {
@@ -41,6 +42,10 @@ contract DAOProposer {
         );
 
         daoGovernor = _governor;
+    }
+
+    function getProposalCreator(uint256 id) public view returns (address) {
+        return proposalCreator[id];
     }
 
     function getProposalContent(
@@ -86,6 +91,8 @@ contract DAOProposer {
             description
         );
         proposalCount++;
+
+        proposalCreator[proposalID] = msg.sender;
 
         return proposalID;
     }

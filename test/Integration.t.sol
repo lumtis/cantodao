@@ -66,6 +66,7 @@ contract IntegrationTest is Test {
 
     function testVoteAndRejectProposal() public {
         vm.startPrank(deployer);
+        vm.roll(10);
 
         // Create a proposal
         (
@@ -90,6 +91,10 @@ contract IntegrationTest is Test {
             uint(IGovernor.ProposalState.Active)
         );
 
+        // Assert start and end date of the proposal
+        assertEq(dao.proposalSnapshot(proposalId), 10);
+        assertEq(dao.proposalDeadline(proposalId), 370);
+
         // Vote on the proposal
         assertFalse(dao.hasVoted(proposalId, deployer));
         dao.castVote(proposalId, uint8(VoteType.Against));
@@ -101,6 +106,12 @@ contract IntegrationTest is Test {
             uint(dao.state(proposalId)),
             uint(IGovernor.ProposalState.Defeated)
         );
+
+        (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes) = dao
+            .proposalVotes(proposalId);
+        assertEq(againstVotes, 1000000);
+        assertEq(forVotes, 0);
+        assertEq(abstainVotes, 0);
     }
 
     function testVoteApproveAndExecuteProposal() public {

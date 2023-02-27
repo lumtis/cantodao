@@ -36,6 +36,8 @@ contract DAOGovernorTest is Test {
     }
 
     function testAllowProposerPropose() public {
+        voteMock.setPastTotalSupply(1000);
+
         // Prepare proposal
         address[] memory targets = new address[](1);
         targets[0] = address(0x123);
@@ -56,6 +58,7 @@ contract DAOGovernorTest is Test {
             uint(dao.state(proposalId)),
             uint(IGovernor.ProposalState.Pending)
         );
+        assertEq(dao.quorumVotes(proposalId), 500);
     }
 
     function testFailNonProposerPropose() public {

@@ -59,6 +59,7 @@ contract DAOProposerTest is Test {
         assertEq(newValues, values);
         assertEq(newCalldatas[0], calldatas[0]);
         assertEq(newDescription, description);
+        assertEq(proposer.getProposalCreator(42), address(this));
 
         // Check mock call
         assertEq(governor.getCounter(), 1);
