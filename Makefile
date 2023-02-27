@@ -1,4 +1,4 @@
-.PHONY: deploy-factory-local deploy-factory-dry deploy-factory-cantotest build test
+.PHONY: deploy-factory-local deploy-factory-dry deploy-factory-cantotest build test types
 .DEFAULT_GOAL := none
 
 none:
@@ -20,3 +20,13 @@ build:
 
 test:
 	forge test
+
+clean:
+	rm -rf out
+
+types:
+	npx typechain --target ethers-v5 \
+	out/DAOFactory.sol/DAOFactory.json \
+	out/DAOGovernor.sol/DAOGovernor.json \
+	out/DAOToken.sol/DAOToken.json \
+	out/DAOProposer.sol/DAOProposer.json
