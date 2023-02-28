@@ -15,7 +15,7 @@ contract DeployNote is Script {
             "Canto Note",
             "NOTE",
             0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
-            1000000
+            1000000 * (10 ** 16)
         );
         vm.stopBroadcast();
     }

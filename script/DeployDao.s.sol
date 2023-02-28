@@ -19,14 +19,14 @@ contract DeployDao is Script {
             "https://i.imgur.com/J2Awq0y.png",
             "Croco",
             "CROCO",
-            1000000
+            1000000 * (10 ** 16)
         );
         daoFactory.createDAO(
             "Canto DAO",
             "https://i.imgur.com/5dCmheE.png",
             "Canto DAO",
             "CANTOX",
-            6000000
+            6000000 * (10 ** 16)
         );
 
         vm.stopBroadcast();
