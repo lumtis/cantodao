@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
-import "openzeppelin-contracts/contracts/governance/IGovernor.sol";
-import "openzeppelin-contracts/contracts/governance/Governor.sol";
+import "@openzeppelin/contracts/governance/IGovernor.sol";
+import "@openzeppelin/contracts/governance/Governor.sol";
 import "forge-std/Test.sol";
 import "./mocks/Vote.sol";
 import "../src/DAOGovernor.sol";

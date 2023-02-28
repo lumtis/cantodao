@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
-import "openzeppelin-contracts/contracts/governance/Governor.sol";
-import "openzeppelin-contracts/contracts/governance/extensions/GovernorVotes.sol";
-import "openzeppelin-contracts/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "openzeppelin-contracts/contracts/governance/extensions/GovernorCountingSimple.sol";
+import "@openzeppelin/contracts/governance/Governor.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 
 // An implementation of governance for DAOs
 contract DAOGovernor is

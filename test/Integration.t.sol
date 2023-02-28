@@ -5,7 +5,7 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 
-import "openzeppelin-contracts/contracts/governance/IGovernor.sol";
+import "@openzeppelin/contracts/governance/IGovernor.sol";
 
 import "../src/DAOFactory.sol";
 import "../src/DAOProposer.sol";

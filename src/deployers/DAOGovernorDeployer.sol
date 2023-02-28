@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
-import "openzeppelin-contracts/contracts/governance/utils/IVotes.sol";
-import "openzeppelin-contracts/contracts/governance/TimelockController.sol";
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
+import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 import "../DAOGovernor.sol";
 

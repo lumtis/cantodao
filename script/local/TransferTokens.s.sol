@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 // Make various transfers from localnet accounts
 
 import "forge-std/Script.sol";
-import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract TransferTokens is Script {
     IERC20 public note = IERC20(0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9);

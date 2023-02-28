@@ -17,7 +17,7 @@ deploy-factory-local:
 
 .PHONY: deploy-factory-cantotest
 deploy-factory-cantotest:
-	forge script script/DAOFactory.s.sol:DAOFactoryScript -f https://eth.plexnode.wtf/ --chain-id 740 --broadcast
+	forge script script/DAOFactory.s.sol:DAOFactoryScript --rpc-url https://canto-testnet.plexnode.wtf --chain-id 740 --broadcast
 
 .PHONY: deploy-dao-local
 deploy-dao-local:
@@ -26,6 +26,10 @@ deploy-dao-local:
 .PHONY: deploy-note-local
 deploy-note-local:
 	forge script script/DeployNote.s.sol:DeployNote -f http://0.0.0.0:8545 --chain-id 1337 --broadcast
+
+.PHONY: deploy-note-cantotest
+deploy-note-cantotest:
+	forge script script/DeployNote.s.sol:DeployNote -f https://eth.plexnode.wtf/ --chain-id 740 --broadcast
 
 .PHONY: transfer-tokens-local
 transfer-tokens-local:
