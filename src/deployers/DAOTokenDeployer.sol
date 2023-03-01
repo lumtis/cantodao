@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../DAOToken.sol";
+import "../ITurnstile.sol";
 
 interface IDAOTokenDeployer {
     function deployDAOToken(
@@ -14,6 +15,12 @@ interface IDAOTokenDeployer {
 
 // A regular ERC20 token with voting power and mintable by the owner
 contract DAOTokenDeployer {
+    ITurnstile immutable turnstile;
+
+    constructor(ITurnstile _turnstile) {
+        turnstile = _turnstile;
+    }
+
     function deployDAOToken(
         string memory _name,
         string memory _symbol,
@@ -24,7 +31,8 @@ contract DAOTokenDeployer {
             _name,
             _symbol,
             _fundedAddress,
-            _initialSupply
+            _initialSupply,
+            turnstile
         );
 
         // Transfer ownership of the token to the sender

@@ -3,14 +3,16 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 import "../src/DAOToken.sol";
+import "../src/testnet/Turnstile.sol";
 
 contract DAOTokenTest is Test {
     DAOToken token;
     address funded;
 
     function setUp() public {
+        Turnstile turnstile = new Turnstile();
         funded = msg.sender;
-        token = new DAOToken("Test", "TST", funded, 1000000);
+        token = new DAOToken("Test", "TST", funded, 1000000, turnstile);
     }
 
     function testInstantiated() public {

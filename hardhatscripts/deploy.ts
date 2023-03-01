@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 
 /**
  *
@@ -20,9 +20,14 @@ export const DeployFactory = async () => {
   const daoGovernorDeployer = await DAOGovernorDeployer.deploy();
   await daoGovernorDeployer.deployed();
 
+  // Turnstile
+  const Turnstile = await ethers.getContractFactory("Turnstile");
+  const turnstile = await Turnstile.deploy();
+  await turnstile.deployed();
+
   // Token
   const DAOTokenDeployer = await ethers.getContractFactory("DAOTokenDeployer");
-  const daoTokenDeployer = await DAOTokenDeployer.deploy();
+  const daoTokenDeployer = await DAOTokenDeployer.deploy(turnstile.address);
   await daoTokenDeployer.deployed();
 
   // Proposer

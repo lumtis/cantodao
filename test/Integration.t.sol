@@ -15,6 +15,7 @@ import "../src/DAOGovernor.sol";
 import "../src/deployers/DAOGovernorDeployer.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
+import "../src/testnet/Turnstile.sol";
 
 contract IntegrationTest is Test {
     enum VoteType {
@@ -39,8 +40,9 @@ contract IntegrationTest is Test {
         vm.startPrank(deployer);
 
         // Create factory
+        Turnstile turnstile = new Turnstile();
         governorDeployer = new DAOGovernorDeployer();
-        tokenDeployer = new DAOTokenDeployer();
+        tokenDeployer = new DAOTokenDeployer(turnstile);
         proposerDeployer = new DAOProposerDeployer();
         factory = new DAOFactory(
             IDAOGovernorDeployer(address(governorDeployer)),
