@@ -9,8 +9,9 @@ interface IDAOTokenDeployer {
         string memory _name,
         string memory _symbol,
         address _fundedAddress,
-        uint256 _initialSupply
-    ) external returns (address);
+        uint256 _initialSupply,
+        address _turnstileOwner
+    ) external returns (address, uint256);
 }
 
 // A regular ERC20 token with voting power and mintable by the owner
@@ -25,19 +26,21 @@ contract DAOTokenDeployer {
         string memory _name,
         string memory _symbol,
         address _fundedAddress,
-        uint256 _initialSupply
-    ) external returns (address) {
+        uint256 _initialSupply,
+        address _turnstileOwner
+    ) external returns (address, uint256) {
         DAOToken daoToken = new DAOToken(
             _name,
             _symbol,
             _fundedAddress,
             _initialSupply,
-            turnstile
+            turnstile,
+            _turnstileOwner
         );
 
         // Transfer ownership of the token to the sender
         daoToken.transferOwnership(msg.sender);
 
-        return address(daoToken);
+        return (address(daoToken), daoToken.turnstileTokenId());
     }
 }

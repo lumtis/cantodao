@@ -42,7 +42,8 @@ export const DeployFactory = async () => {
   const daoFactory = await DAOFactory.deploy(
     daoGovernorDeployer.address,
     daoTokenDeployer.address,
-    daoProposerDeployer.address
+    daoProposerDeployer.address,
+    turnstile.address
   );
   await daoFactory.deployed();
 

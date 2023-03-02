@@ -17,7 +17,8 @@ const main = async () => {
     "NOTE",
     owner.address,
     BigNumber.from("100000000000000000000000"),
-    turnstile.address
+    turnstile.address,
+    owner.address
   );
   await daoToken.deployed();
 

@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
+import "@openzeppelin/contracts/interfaces/IERC721.sol";
 
 import "./deployers/DAOGovernorDeployer.sol";
 import "./deployers/DAOTokenDeployer.sol";
@@ -20,6 +21,7 @@ contract DAOFactory {
     IDAOGovernorDeployer public governorDeployer;
     IDAOTokenDeployer public tokenDeployer;
     IDAOProposerDeployer public proposerDeployer;
+    IERC721 immutable turnstile;
 
     address[] public daos;
 
@@ -33,11 +35,13 @@ contract DAOFactory {
     constructor(
         IDAOGovernorDeployer _governorDeployer,
         IDAOTokenDeployer _tokenDeployer,
-        IDAOProposerDeployer _proposerDeployer
+        IDAOProposerDeployer _proposerDeployer,
+        IERC721 _turnstile
     ) {
         governorDeployer = _governorDeployer;
         tokenDeployer = _tokenDeployer;
         proposerDeployer = _proposerDeployer;
+        turnstile = _turnstile;
     }
 
     function createDAO(
@@ -51,12 +55,14 @@ contract DAOFactory {
         address proposer = proposerDeployer.deployDAOProposer();
 
         // Deploy governance token
-        address token = tokenDeployer.deployDAOToken(
-            _tokenName,
-            _tokenSymbol,
-            msg.sender,
-            _tokenInitialSupply
-        );
+        (address token, uint256 turnstileTokenId) = tokenDeployer
+            .deployDAOToken(
+                _tokenName,
+                _tokenSymbol,
+                msg.sender,
+                _tokenInitialSupply,
+                address(this)
+            );
 
         // Deploy the DAO governor
         DAOGovernor dao = governorDeployer.deployDAOGovernor(
@@ -74,6 +80,9 @@ contract DAOFactory {
 
         // Transfer ownership of the token to the DAO
         Ownable(token).transferOwnership(address(dao));
+
+        // Transfer the token DAO turnstile to the DAO
+        turnstile.transferFrom(address(this), address(dao), turnstileTokenId);
 
         // Add the DAO to the array of DAOs
         daos.push(address(dao));

@@ -10,17 +10,19 @@ import "./ITurnstile.sol";
 // A regular ERC20 token with voting power and mintable by the owner
 contract DAOToken is ERC20, ERC20Permit, ERC20Votes, Ownable {
     ITurnstile immutable turnstile;
+    uint256 public immutable turnstileTokenId;
 
     constructor(
         string memory _name,
         string memory _symbol,
         address _fundedAddress,
         uint256 _initialSupply,
-        ITurnstile _turnstile
+        ITurnstile _turnstile,
+        address _turnstileOwner
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         _mint(_fundedAddress, _initialSupply);
         turnstile = _turnstile;
-        turnstile.register(msg.sender);
+        turnstileTokenId = turnstile.register(_turnstileOwner);
     }
 
     function mint(uint256 amount) public onlyOwner {

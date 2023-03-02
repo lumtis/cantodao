@@ -24,7 +24,8 @@ contract DAOFactoryScript is Script {
         DAOFactory daoFactory = new DAOFactory(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer))
+            IDAOProposerDeployer(address(proposerDeployer)),
+            turnstile
         );
         // Remove warning
         daoFactory = daoFactory;

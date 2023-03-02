@@ -2,17 +2,27 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
+import "@openzeppelin/contracts/interfaces/IERC721.sol";
+
 import "../src/DAOToken.sol";
 import "../src/testnet/Turnstile.sol";
 
 contract DAOTokenTest is Test {
     DAOToken token;
+    Turnstile turnstile;
     address funded;
 
     function setUp() public {
-        Turnstile turnstile = new Turnstile();
+        turnstile = new Turnstile();
         funded = msg.sender;
-        token = new DAOToken("Test", "TST", funded, 1000000, turnstile);
+        token = new DAOToken(
+            "Test",
+            "TST",
+            funded,
+            1000000,
+            turnstile,
+            address(0x123)
+        );
     }
 
     function testInstantiated() public {
@@ -20,9 +30,15 @@ contract DAOTokenTest is Test {
         assertEq(token.symbol(), "TST");
         assertEq(token.totalSupply(), 1000000);
         assertEq(token.balanceOf(funded), 1000000);
+
+        // Check turnstile is minted to turnstile owner
+        assertEq(
+            IERC721(turnstile).ownerOf(token.turnstileTokenId()),
+            address(0x123)
+        );
     }
 
-    function testMint() public {
+    function testCanMint() public {
         uint256 balance = token.balanceOf(token.owner());
         token.mint(1000);
         assertEq(token.balanceOf(token.owner()), balance + 1000);

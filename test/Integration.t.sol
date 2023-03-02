@@ -47,7 +47,8 @@ contract IntegrationTest is Test {
         factory = new DAOFactory(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer))
+            IDAOProposerDeployer(address(proposerDeployer)),
+            turnstile
         );
 
         // Create a DAO

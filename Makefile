@@ -65,4 +65,5 @@ types:
 	out/DAOFactory.sol/DAOFactory.json \
 	out/DAOGovernor.sol/DAOGovernor.json \
 	out/DAOToken.sol/DAOToken.json \
-	out/DAOProposer.sol/DAOProposer.json
+	out/DAOProposer.sol/DAOProposer.json \
+	out/Turnstile.sol/Turnstile.json
