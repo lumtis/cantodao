@@ -9,6 +9,7 @@ import "../DAOGovernor.sol";
 interface IDAOGovernorDeployer {
     function deployDAOGovernor(
         string memory _daoName,
+        string memory _daoDescription,
         string memory _daoImage,
         IVotes _token,
         address _proposer,
@@ -21,6 +22,7 @@ interface IDAOGovernorDeployer {
 contract DAOGovernorDeployer {
     function deployDAOGovernor(
         string memory _daoName,
+        string memory _daoDescription,
         string memory _daoImage,
         IVotes _token,
         address _proposer,
@@ -31,6 +33,7 @@ contract DAOGovernorDeployer {
         // Deploy the DAO governor
         DAOGovernor dao = new DAOGovernor(
             _daoName,
+            _daoDescription,
             _daoImage,
             _token,
             _proposer,

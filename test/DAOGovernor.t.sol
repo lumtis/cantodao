@@ -16,6 +16,7 @@ contract DAOGovernorTest is Test {
 
         dao = new DAOGovernor(
             "daoTest",
+            "daoDescription",
             "daoImage",
             IVotes(address(voteMock)),
             address(0x123),
@@ -27,12 +28,74 @@ contract DAOGovernorTest is Test {
 
     function testInstantiated() public {
         assertEq(dao.name(), "daoTest");
+        assertEq(dao.description(), "daoDescription");
         assertEq(dao.imageURL(), "daoImage");
         assertEq(dao.proposer(), address(0x123));
         assertEq(address(dao.token()), address(voteMock));
         assertEq(dao.votingDelay(), 10);
         assertEq(dao.votingPeriod(), 10);
+        assertEq(dao.quorumNumerator(), 50);
         assertEq(dao.proposalThreshold(), 0);
+    }
+
+    function testAllowUpdateVotingDelay() public {
+        vm.prank(address(dao));
+        dao.updateVotingDelay(20);
+        assertEq(dao.votingDelay(), 20);
+    }
+
+    function testFailUpdateVotingDelayNonSelf() public {
+        dao.updateVotingDelay(20);
+    }
+
+    function testAllowUpdateVotingPeriod() public {
+        vm.prank(address(dao));
+        dao.updateVotingPeriod(20);
+        assertEq(dao.votingPeriod(), 20);
+    }
+
+    function testFailUpdateVotingPeriodNonSelf() public {
+        dao.updateVotingPeriod(20);
+    }
+
+    function testAllowUpdateQuorumFraction() public {
+        vm.prank(address(dao));
+        dao.updateQuorumFraction(20);
+        assertEq(dao.quorumNumerator(), 20);
+    }
+
+    function testFailUpdateQuorumFractionNonSelf() public {
+        dao.updateQuorumFraction(20);
+    }
+
+    function testAllowUpdateProposer() public {
+        vm.prank(address(dao));
+        dao.updateProposer(address(0x456));
+        assertEq(dao.proposer(), address(0x456));
+    }
+
+    function testFailUpdateProposerNonSelf() public {
+        dao.updateProposer(address(0x456));
+    }
+
+    function testAllowUpdateImageURL() public {
+        vm.prank(address(dao));
+        dao.updateImageURL("newImage");
+        assertEq(dao.imageURL(), "newImage");
+    }
+
+    function testFailUpdateImageURLNonSelf() public {
+        dao.updateImageURL("newImage");
+    }
+
+    function testAllowUpdateDescription() public {
+        vm.prank(address(dao));
+        dao.updateDescription("newDescription");
+        assertEq(dao.description(), "newDescription");
+    }
+
+    function testFailUpdateDescriptionNonSelf() public {
+        dao.updateDescription("newDescription");
     }
 
     function testAllowProposerPropose() public {

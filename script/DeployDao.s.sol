@@ -13,21 +13,41 @@ contract DeployDao is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        // Deploy DAOs
-        daoFactory.createDAO(
-            "Crocodile DAO",
-            "https://i.imgur.com/J2Awq0y.png",
-            "Croco",
-            "CROCO",
-            1000000 * (10 ** 16)
-        );
-        daoFactory.createDAO(
-            "Canto DAO",
-            "https://i.imgur.com/5dCmheE.png",
-            "Canto DAO",
-            "CANTOX",
-            6000000 * (10 ** 16)
-        );
+        DaoData memory data = DaoData({
+            name: "Crocodile DAO",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            image: "https://i.imgur.com/J2Awq0y.png"
+        });
+        DaoToken memory tokenInfo = DaoToken({
+            name: "Croco",
+            symbol: "CROCO",
+            initialSupply: 1000000 * (10 ** 16)
+        });
+        DaoParams memory params = DaoParams({
+            quorumFraction: 40,
+            votingDelay: 0,
+            votingPeriod: 360
+        });
+
+        daoFactory.createDAO(data, tokenInfo, params);
+
+        DaoData memory data2 = DaoData({
+            name: "Canto DsAO",
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            image: "https://i.imgur.com/5dCmheE.png"
+        });
+        DaoToken memory tokenInfo2 = DaoToken({
+            name: "Canto DAO",
+            symbol: "CANTOX",
+            initialSupply: 6000000 * (10 ** 16)
+        });
+        DaoParams memory params2 = DaoParams({
+            quorumFraction: 40,
+            votingDelay: 0,
+            votingPeriod: 360
+        });
+
+        daoFactory.createDAO(data2, tokenInfo2, params2);
 
         vm.stopBroadcast();
     }

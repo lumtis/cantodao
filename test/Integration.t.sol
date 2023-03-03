@@ -51,12 +51,29 @@ contract IntegrationTest is Test {
             turnstile
         );
 
+        // Dao arguments
+        DaoData memory data = DaoData({
+            name: "daoTest",
+            description: "daoDescription",
+            image: "daoImage"
+        });
+        DaoToken memory tokenInfo = DaoToken({
+            name: "Test",
+            symbol: "TST",
+            initialSupply: 1000000
+        });
+        DaoParams memory params = DaoParams({
+            quorumFraction: 40,
+            votingDelay: 0,
+            votingPeriod: 360
+        });
+
         // Create a DAO
         (
             address daoAddress,
             address tokenAddress,
             address proposerAddress
-        ) = factory.createDAO("daoTest", "daoImage", "Test", "TST", 1000000);
+        ) = factory.createDAO(data, tokenInfo, params);
         dao = DAOGovernor(payable(daoAddress));
         token = DAOToken(tokenAddress);
         proposer = DAOProposer(proposerAddress);

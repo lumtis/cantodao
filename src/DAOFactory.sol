@@ -11,10 +11,23 @@ import "./deployers/DAOTokenDeployer.sol";
 import "./deployers/DAOProposerDeployer.sol";
 import "./DAOGovernor.sol";
 
-// Define constant for quorum fraction, voting delay, and voting period
-uint256 constant DEFAULT_QUORUM_FRACTION = 40;
-uint256 constant DEFAULT_VOTING_DELAY = 0;
-uint256 constant DEFAULT_VOTING_PERIOD = 360; // around 30 minutes
+struct DaoData {
+    string name;
+    string description;
+    string image;
+}
+
+struct DaoToken {
+    string name;
+    string symbol;
+    uint256 initialSupply;
+}
+
+struct DaoParams {
+    uint256 quorumFraction;
+    uint256 votingDelay;
+    uint256 votingPeriod;
+}
 
 contract DAOFactory {
     // Deployer contracts
@@ -44,36 +57,29 @@ contract DAOFactory {
         turnstile = _turnstile;
     }
 
+    // Get a DAO from its index
+    function getDAO(uint256 _index) external view returns (address) {
+        return daos[_index];
+    }
+
+    // Get the number of DAOs
+    function getDAOCount() external view returns (uint256) {
+        return daos.length;
+    }
+
     function createDAO(
-        string memory _daoName,
-        string memory _daoImage,
-        string memory _tokenName,
-        string memory _tokenSymbol,
-        uint256 _tokenInitialSupply
+        DaoData memory _data,
+        DaoToken memory _token,
+        DaoParams memory _params
     ) external returns (address, address, address) {
         // Deploy proposer
         address proposer = proposerDeployer.deployDAOProposer();
 
         // Deploy governance token
-        (address token, uint256 turnstileTokenId) = tokenDeployer
-            .deployDAOToken(
-                _tokenName,
-                _tokenSymbol,
-                msg.sender,
-                _tokenInitialSupply,
-                address(this)
-            );
+        (address token, uint256 turnstileTokenId) = _deployToken(_token);
 
         // Deploy the DAO governor
-        DAOGovernor dao = governorDeployer.deployDAOGovernor(
-            _daoName,
-            _daoImage,
-            IVotes(token),
-            proposer,
-            DEFAULT_QUORUM_FRACTION,
-            DEFAULT_VOTING_DELAY,
-            DEFAULT_VOTING_PERIOD
-        );
+        DAOGovernor dao = _deployDao(_data, _params, IVotes(token), proposer);
 
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
@@ -97,13 +103,35 @@ contract DAOFactory {
         return (address(dao), address(token), address(proposer));
     }
 
-    // Get a DAO from its index
-    function getDAO(uint256 _index) external view returns (address) {
-        return daos[_index];
+    function _deployToken(
+        DaoToken memory _token
+    ) internal returns (address, uint256) {
+        return
+            tokenDeployer.deployDAOToken(
+                _token.name,
+                _token.symbol,
+                msg.sender,
+                _token.initialSupply,
+                address(this)
+            );
     }
 
-    // Get the number of DAOs
-    function getDAOCount() external view returns (uint256) {
-        return daos.length;
+    function _deployDao(
+        DaoData memory _data,
+        DaoParams memory _params,
+        IVotes _token,
+        address _proposer
+    ) internal returns (DAOGovernor) {
+        return
+            governorDeployer.deployDAOGovernor(
+                _data.name,
+                _data.description,
+                _data.image,
+                _token,
+                _proposer,
+                _params.quorumFraction,
+                _params.votingDelay,
+                _params.votingPeriod
+            );
     }
 }

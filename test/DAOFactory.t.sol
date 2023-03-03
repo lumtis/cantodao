@@ -13,6 +13,11 @@ import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
 import "../src/testnet/Turnstile.sol";
 
+// Define constant for quorum fraction, voting delay, and voting period
+uint256 constant quorumFraction = 40;
+uint256 constant votingDelay = 0;
+uint256 constant votingPeriod = 360; // around 30 minutes
+
 contract DAOFactoryTest is Test {
     DAOGovernorDeployer governorDeployer;
     DAOTokenDeployer tokenDeployer;
@@ -45,12 +50,25 @@ contract DAOFactoryTest is Test {
     }
 
     function testCanCreateDAO() public {
+        DaoData memory data = DaoData({
+            name: "daoTest",
+            description: "daoDescription",
+            image: "daoImage"
+        });
+        DaoToken memory tokenInfo = DaoToken({
+            name: "Test",
+            symbol: "TST",
+            initialSupply: 1000000
+        });
+        DaoParams memory params = DaoParams({
+            quorumFraction: quorumFraction,
+            votingDelay: votingDelay,
+            votingPeriod: votingPeriod
+        });
         (address dao, address token, address proposer) = factory.createDAO(
-            "daoTest",
-            "daoImage",
-            "Test",
-            "TST",
-            1000000
+            data,
+            tokenInfo,
+            params
         );
         assertEq(factory.getDAOCount(), 1);
         address newDao = factory.getDAO(0);
@@ -58,6 +76,7 @@ contract DAOFactoryTest is Test {
 
         DAOGovernor governor = DAOGovernor(payable(dao));
         assertEq(governor.name(), "daoTest");
+        assertEq(governor.description(), "daoDescription");
         assertEq(governor.imageURL(), "daoImage");
         assertEq(governor.proposer(), proposer);
         assertEq(address(governor.token()), token);
@@ -71,20 +90,31 @@ contract DAOFactoryTest is Test {
         DAOProposer proposerContract = DAOProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
 
+        DaoData memory data2 = DaoData({
+            name: "daoTest2",
+            description: "daoDescription2",
+            image: "daoImage2"
+        });
+        DaoToken memory tokenInfo2 = DaoToken({
+            name: "Test2",
+            symbol: "TST2",
+            initialSupply: 1000000
+        });
+        DaoParams memory params2 = DaoParams({
+            quorumFraction: quorumFraction,
+            votingDelay: votingDelay,
+            votingPeriod: votingPeriod
+        });
+
         // can create another DAO
-        (dao, token, proposer) = factory.createDAO(
-            "daoTest2",
-            "daoImage2",
-            "Test2",
-            "TST2",
-            1000000
-        );
+        (dao, token, proposer) = factory.createDAO(data2, tokenInfo2, params2);
         assertEq(factory.getDAOCount(), 2);
         newDao = factory.getDAO(1);
         assertEq(newDao, dao);
 
         governor = DAOGovernor(payable(dao));
         assertEq(governor.name(), "daoTest2");
+        assertEq(governor.description(), "daoDescription2");
         assertEq(governor.imageURL(), "daoImage2");
         assertEq(governor.proposer(), proposer);
         assertEq(address(governor.token()), token);
