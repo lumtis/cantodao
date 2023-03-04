@@ -67,13 +67,16 @@ contract IntegrationTest is Test {
             votingDelay: 0,
             votingPeriod: 360
         });
+        DaoProposer memory proposerInfo = DaoProposer({
+            minimalVotingPower: 1000
+        });
 
         // Create a DAO
         (
             address daoAddress,
             address tokenAddress,
             address proposerAddress
-        ) = factory.createDAO(data, tokenInfo, params);
+        ) = factory.createDAO(data, tokenInfo, params, proposerInfo);
         dao = DAOGovernor(payable(daoAddress));
         token = DAOToken(tokenAddress);
         proposer = DAOProposer(proposerAddress);

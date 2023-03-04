@@ -17,6 +17,7 @@ import "../src/testnet/Turnstile.sol";
 uint256 constant quorumFraction = 40;
 uint256 constant votingDelay = 0;
 uint256 constant votingPeriod = 360; // around 30 minutes
+uint constant minimalVotingPower = 1000;
 
 contract DAOFactoryTest is Test {
     DAOGovernorDeployer governorDeployer;
@@ -65,10 +66,14 @@ contract DAOFactoryTest is Test {
             votingDelay: votingDelay,
             votingPeriod: votingPeriod
         });
+        DaoProposer memory proposerInfo = DaoProposer({
+            minimalVotingPower: minimalVotingPower
+        });
         (address dao, address token, address proposer) = factory.createDAO(
             data,
             tokenInfo,
-            params
+            params,
+            proposerInfo
         );
         assertEq(factory.getDAOCount(), 1);
         address newDao = factory.getDAO(0);
@@ -89,6 +94,7 @@ contract DAOFactoryTest is Test {
 
         DAOProposer proposerContract = DAOProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
+        assertEq(proposerContract.mininalVotingPower(), minimalVotingPower);
 
         DaoData memory data2 = DaoData({
             name: "daoTest2",
@@ -105,9 +111,17 @@ contract DAOFactoryTest is Test {
             votingDelay: votingDelay,
             votingPeriod: votingPeriod
         });
+        DaoProposer memory proposerInfo2 = DaoProposer({
+            minimalVotingPower: minimalVotingPower
+        });
 
         // can create another DAO
-        (dao, token, proposer) = factory.createDAO(data2, tokenInfo2, params2);
+        (dao, token, proposer) = factory.createDAO(
+            data2,
+            tokenInfo2,
+            params2,
+            proposerInfo2
+        );
         assertEq(factory.getDAOCount(), 2);
         newDao = factory.getDAO(1);
         assertEq(newDao, dao);
@@ -127,5 +141,6 @@ contract DAOFactoryTest is Test {
 
         proposerContract = DAOProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
+        assertEq(proposerContract.mininalVotingPower(), minimalVotingPower);
     }
 }

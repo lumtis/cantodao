@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "forge-std/Test.sol";
 import "../src/DAOProposer.sol";
 import "./mocks/ProposalReceiver.sol";
+import "./mocks/Vote.sol";
+
+uint256 constant mininalVote = 1000;
 
 contract DAOProposerTest is Test {
     DAOProposer proposer;
 
     function setUp() public {
-        proposer = new DAOProposer();
+        proposer = new DAOProposer(mininalVote);
     }
 
     function testInstantiated() public {
         assertEq(proposer.proposalCount(), 0);
+        assertEq(proposer.mininalVotingPower(), mininalVote);
     }
 
     function testCanSetGovernor() public {
@@ -28,11 +33,29 @@ contract DAOProposerTest is Test {
         proposer.setGovernor(IProposalReceiver(address(governor)));
     }
 
+    function testAllowGovernorSetMinimalVotingPower() public {
+        ProposalReceiverMock governor = new ProposalReceiverMock();
+        proposer.setGovernor(IProposalReceiver(address(governor)));
+        vm.prank(address(governor));
+        proposer.setMinimalVotingPower(10);
+        assertEq(proposer.mininalVotingPower(), 10);
+    }
+
+    function testFailNonGovernorSetMinimalVotingPower() public {
+        ProposalReceiverMock governor = new ProposalReceiverMock();
+        proposer.setGovernor(IProposalReceiver(address(governor)));
+        vm.prank(address(0x123));
+        proposer.setMinimalVotingPower(10);
+    }
+
     function testCanPropose() public {
         ProposalReceiverMock governor = new ProposalReceiverMock();
         proposer.setGovernor(IProposalReceiver(address(governor)));
-
         governor.setProposalId(42);
+
+        VoteMock voteMock = new VoteMock();
+        governor.setVoteToken(IVotes(address(voteMock)));
+        voteMock.setVotes(mininalVote);
 
         // Prepare proposal
         address[] memory targets = new address[](1);
@@ -97,5 +120,26 @@ contract DAOProposerTest is Test {
         assertEq(newDescription, description);
 
         assertEq(governor.getCounter(), 2);
+    }
+
+    function testFailProposeNotEnoughVote() public {
+        ProposalReceiverMock governor = new ProposalReceiverMock();
+        proposer.setGovernor(IProposalReceiver(address(governor)));
+
+        VoteMock voteMock = new VoteMock();
+        governor.setVoteToken(IVotes(address(voteMock)));
+        voteMock.setVotes(mininalVote - 1);
+
+        // Prepare proposal
+        address[] memory targets = new address[](1);
+        targets[0] = address(0x123);
+        uint256[] memory values = new uint256[](1);
+        values[0] = 42;
+        bytes[] memory calldatas = new bytes[](1);
+        calldatas[0] = abi.encodeWithSignature("setProposalCount(uint256)", 1);
+        string memory description = "test";
+
+        // Propose
+        proposer.propose(targets, values, calldatas, description);
     }
 }

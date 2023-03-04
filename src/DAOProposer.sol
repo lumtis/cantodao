@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "./DAOGovernor.sol";
 
 interface IProposalReceiver {
@@ -10,6 +13,8 @@ interface IProposalReceiver {
         bytes[] memory calldatas,
         string memory description
     ) external returns (uint256);
+
+    function token() external view returns (IVotes);
 }
 
 interface IDAOProposer {
@@ -28,12 +33,37 @@ contract DAOProposer {
     // Address of the DAO governor
     IProposalReceiver public daoGovernor;
 
+    // Proposal condition
+    uint256 public mininalVotingPower = 0;
+
+    // Proposal data
     uint256 public proposalCount = 0;
     mapping(uint256 => uint256) public proposalIDs;
     mapping(uint256 => ProposalContent) public proposalContents;
     mapping(uint256 => address) public proposalCreator;
 
-    // set the DAO governor address
+    constructor(uint256 _mininalVotingPower) {
+        mininalVotingPower = _mininalVotingPower;
+    }
+
+    modifier onlyGovernor() {
+        require(
+            msg.sender == address(daoGovernor),
+            "Must be called by DAO governor"
+        );
+        _;
+    }
+
+    modifier requireMinimalVote() {
+        require(address(daoGovernor) != address(0), "DAO governor not set");
+        require(
+            daoGovernor.token().getVotes(msg.sender) >= mininalVotingPower,
+            "Minimal vote requirement not met"
+        );
+        _;
+    }
+
+    // set the DAO governor address and transfer ownership to it
     function setGovernor(IProposalReceiver _governor) external {
         // check the address is not initialized
         require(
@@ -42,6 +72,12 @@ contract DAOProposer {
         );
 
         daoGovernor = _governor;
+    }
+
+    function setMinimalVotingPower(
+        uint256 _mininalVotingPower
+    ) public onlyGovernor {
+        mininalVotingPower = _mininalVotingPower;
     }
 
     function getProposalCreator(uint256 id) public view returns (address) {
@@ -74,7 +110,7 @@ contract DAOProposer {
         uint256[] memory values,
         bytes[] memory calldatas,
         string memory description
-    ) public returns (uint256) {
+    ) public requireMinimalVote returns (uint256) {
         uint256 proposalID = daoGovernor.propose(
             targets,
             values,

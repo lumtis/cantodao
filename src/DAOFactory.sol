@@ -29,6 +29,10 @@ struct DaoParams {
     uint256 votingPeriod;
 }
 
+struct DaoProposer {
+    uint256 minimalVotingPower;
+}
+
 contract DAOFactory {
     // Deployer contracts
     IDAOGovernorDeployer public governorDeployer;
@@ -70,10 +74,13 @@ contract DAOFactory {
     function createDAO(
         DaoData memory _data,
         DaoToken memory _token,
-        DaoParams memory _params
+        DaoParams memory _params,
+        DaoProposer memory _proposer
     ) external returns (address, address, address) {
         // Deploy proposer
-        address proposer = proposerDeployer.deployDAOProposer();
+        address proposer = proposerDeployer.deployDAOProposer(
+            _proposer.minimalVotingPower
+        );
 
         // Deploy governance token
         (address token, uint256 turnstileTokenId) = _deployToken(_token);

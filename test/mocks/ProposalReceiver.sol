@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
+
 contract ProposalReceiverMock {
     uint256 counter = 0;
     uint256 proposalId = 0;
@@ -8,9 +10,18 @@ contract ProposalReceiverMock {
     uint256[] values;
     bytes[] calldatas;
     string description;
+    IVotes voteToken;
 
     function setProposalId(uint256 _proposalId) external {
         proposalId = _proposalId;
+    }
+
+    function setVoteToken(IVotes _voteToken) external {
+        voteToken = _voteToken;
+    }
+
+    function token() public view returns (IVotes) {
+        return voteToken;
     }
 
     function propose(

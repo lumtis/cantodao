@@ -28,8 +28,9 @@ contract DeployDao is Script {
             votingDelay: 0,
             votingPeriod: 360
         });
+        DaoProposer memory proposerInfo = DaoProposer({minimalVotingPower: 0});
 
-        daoFactory.createDAO(data, tokenInfo, params);
+        daoFactory.createDAO(data, tokenInfo, params, proposerInfo);
 
         DaoData memory data2 = DaoData({
             name: "Canto DsAO",
@@ -41,13 +42,8 @@ contract DeployDao is Script {
             symbol: "CANTOX",
             initialSupply: 6000000 * (10 ** 16)
         });
-        DaoParams memory params2 = DaoParams({
-            quorumFraction: 40,
-            votingDelay: 0,
-            votingPeriod: 360
-        });
 
-        daoFactory.createDAO(data2, tokenInfo2, params2);
+        daoFactory.createDAO(data2, tokenInfo2, params, proposerInfo);
 
         vm.stopBroadcast();
     }
