@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "forge-std/Test.sol";
@@ -31,7 +32,7 @@ contract DAOGovernorTest is Test {
         assertEq(dao.description(), "daoDescription");
         assertEq(dao.imageURL(), "daoImage");
         assertEq(dao.proposer(), address(0x123));
-        assertEq(address(dao.token()), address(voteMock));
+        assertEq(address(dao.votingModule()), address(voteMock));
         assertEq(dao.votingDelay(), 10);
         assertEq(dao.votingPeriod(), 10);
         assertEq(dao.quorumNumerator(), 50);
@@ -66,6 +67,16 @@ contract DAOGovernorTest is Test {
 
     function testFailUpdateQuorumFractionNonSelf() public {
         dao.updateQuorumFraction(20);
+    }
+
+    function testAllowUpdateVotingModule() public {
+        vm.prank(address(dao));
+        dao.updateVotingModule(IVotes(address(0x456)));
+        assertEq(address(dao.votingModule()), address(0x456));
+    }
+
+    function testFailUpdateVotingModuleNonSelf() public {
+        dao.updateVotingModule(IVotes(address(0x456)));
     }
 
     function testAllowUpdateProposer() public {

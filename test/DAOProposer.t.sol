@@ -54,7 +54,7 @@ contract DAOProposerTest is Test {
         governor.setProposalId(42);
 
         VoteMock voteMock = new VoteMock();
-        governor.setVoteToken(IVotes(address(voteMock)));
+        governor.setVotingModule(IVotes(address(voteMock)));
         voteMock.setVotes(mininalVote);
 
         // Prepare proposal
@@ -127,7 +127,7 @@ contract DAOProposerTest is Test {
         proposer.setGovernor(IProposalReceiver(address(governor)));
 
         VoteMock voteMock = new VoteMock();
-        governor.setVoteToken(IVotes(address(voteMock)));
+        governor.setVotingModule(IVotes(address(voteMock)));
         voteMock.setVotes(mininalVote - 1);
 
         // Prepare proposal

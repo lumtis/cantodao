@@ -10,18 +10,18 @@ contract ProposalReceiverMock {
     uint256[] values;
     bytes[] calldatas;
     string description;
-    IVotes voteToken;
+    IVotes votingMod;
 
     function setProposalId(uint256 _proposalId) external {
         proposalId = _proposalId;
     }
 
-    function setVoteToken(IVotes _voteToken) external {
-        voteToken = _voteToken;
+    function setVotingModule(IVotes _votingModule) external {
+        votingMod = _votingModule;
     }
 
-    function token() public view returns (IVotes) {
-        return voteToken;
+    function votingModule() external view returns (IVotes) {
+        return votingMod;
     }
 
     function propose(

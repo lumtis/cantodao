@@ -84,7 +84,7 @@ contract DAOFactoryTest is Test {
         assertEq(governor.description(), "daoDescription");
         assertEq(governor.imageURL(), "daoImage");
         assertEq(governor.proposer(), proposer);
-        assertEq(address(governor.token()), token);
+        assertEq(address(governor.votingModule()), token);
 
         DAOToken tokenContract = DAOToken(token);
         assertEq(tokenContract.name(), "Test");
@@ -131,7 +131,7 @@ contract DAOFactoryTest is Test {
         assertEq(governor.description(), "daoDescription2");
         assertEq(governor.imageURL(), "daoImage2");
         assertEq(governor.proposer(), proposer);
-        assertEq(address(governor.token()), token);
+        assertEq(address(governor.votingModule()), token);
 
         tokenContract = DAOToken(token);
         assertEq(tokenContract.name(), "Test2");

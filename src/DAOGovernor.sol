@@ -3,9 +3,10 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/Governor.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
+
+import "./governor/GovernorVotes.sol";
+import "./governor/GovernorVotesQuorumFraction.sol";
 
 // An implementation of governance for DAOs
 contract DAOGovernor is
@@ -87,12 +88,18 @@ contract DAOGovernor is
         daoVotingPeriod = _votingPeriod;
     }
 
+    function updateQuorumFraction(uint256 _fraction) public onlySelf {
+        _updateQuorumNumerator(_fraction);
+    }
+
+    // Module upgrade methods
+
     function updateProposer(address _proposer) public onlySelf {
         proposer = _proposer;
     }
 
-    function updateQuorumFraction(uint256 _fraction) public onlySelf {
-        _updateQuorumNumerator(_fraction);
+    function updateVotingModule(IVotes _votingModule) public onlySelf {
+        votingModule = _votingModule;
     }
 
     // Data modification methods

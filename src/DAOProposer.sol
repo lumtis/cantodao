@@ -14,7 +14,7 @@ interface IProposalReceiver {
         string memory description
     ) external returns (uint256);
 
-    function token() external view returns (IVotes);
+    function votingModule() external view returns (IVotes);
 }
 
 interface IDAOProposer {
@@ -57,7 +57,8 @@ contract DAOProposer {
     modifier requireMinimalVote() {
         require(address(daoGovernor) != address(0), "DAO governor not set");
         require(
-            daoGovernor.token().getVotes(msg.sender) >= mininalVotingPower,
+            daoGovernor.votingModule().getVotes(msg.sender) >=
+                mininalVotingPower,
             "Minimal vote requirement not met"
         );
         _;
