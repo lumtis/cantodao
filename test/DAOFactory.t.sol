@@ -161,9 +161,7 @@ contract DAOFactoryNewTokenTest is Test {
             image: "daoImage"
         });
         DaoWrappedToken memory tokenInfo = DaoWrappedToken({
-            name: "Test",
-            symbol: "TST",
-            assetToken: IERC20(address(assetToken))
+            assetToken: ERC20(address(assetToken))
         });
         DaoParams memory params = DaoParams({
             quorumFraction: quorumFraction,
@@ -187,8 +185,8 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(address(governor.votingModule()), token);
 
         DAOWrappedToken tokenContract = DAOWrappedToken(token);
-        assertEq(tokenContract.name(), "Test");
-        assertEq(tokenContract.symbol(), "TST");
+        assertEq(tokenContract.name(), "Asset DAO token");
+        assertEq(tokenContract.symbol(), "daoAST");
         assertEq(tokenContract.asset(), address(assetToken));
 
         DAOProposer proposerContract = DAOProposer(proposer);
@@ -201,9 +199,7 @@ contract DAOFactoryNewTokenTest is Test {
             image: "daoImage2"
         });
         DaoWrappedToken memory tokenInfo2 = DaoWrappedToken({
-            name: "Test2",
-            symbol: "TST2",
-            assetToken: IERC20(address(assetToken))
+            assetToken: ERC20(address(assetToken))
         });
         DaoParams memory params2 = DaoParams({
             quorumFraction: quorumFraction,
@@ -233,8 +229,8 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(address(governor.votingModule()), token);
 
         tokenContract = DAOWrappedToken(token);
-        assertEq(tokenContract.name(), "Test2");
-        assertEq(tokenContract.symbol(), "TST2");
+        assertEq(tokenContract.name(), "Asset DAO token");
+        assertEq(tokenContract.symbol(), "daoAST");
         assertEq(tokenContract.asset(), address(assetToken));
 
         proposerContract = DAOProposer(proposer);

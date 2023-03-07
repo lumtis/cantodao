@@ -16,12 +16,17 @@ contract DAOWrappedToken is ERC20, ERC20Permit, ERC20Votes, ERC4626 {
     uint256 public immutable turnstileTokenId;
 
     constructor(
-        string memory _name,
-        string memory _symbol,
-        IERC20 _token,
+        ERC20 _token,
         ITurnstile _turnstile,
         address _turnstileOwner
-    ) ERC20(_name, _symbol) ERC20Permit(_name) ERC4626(_token) {
+    )
+        ERC20(
+            string.concat(_token.name(), " DAO token"),
+            string.concat("dao", _token.symbol())
+        )
+        ERC20Permit(string.concat(_token.name(), " DAO token"))
+        ERC4626(_token)
+    {
         turnstile = _turnstile;
         turnstileTokenId = turnstile.register(_turnstileOwner);
     }

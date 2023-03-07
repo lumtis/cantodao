@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./deployers/DAOGovernorDeployer.sol";
 import "./deployers/DAOTokenDeployer.sol";
@@ -25,9 +25,7 @@ struct DaoToken {
 }
 
 struct DaoWrappedToken {
-    string name;
-    string symbol;
-    IERC20 assetToken;
+    ERC20 assetToken;
 }
 
 struct DaoParams {
@@ -161,8 +159,6 @@ contract DAOFactory {
     ) internal returns (address, uint256) {
         return
             wrappedTokenDeployer.deployDAOWrappedToken(
-                _token.name,
-                _token.symbol,
                 _token.assetToken,
                 address(this)
             );

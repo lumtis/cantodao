@@ -7,7 +7,7 @@ import "../src/DAOFactory.sol";
 // DeployDao script
 contract DeployDao is Script {
     DAOFactory public daoFactory =
-        DAOFactory(0x5fc8d32690cc91d4c39d9d3abcbd16989f875707);
+        DAOFactory(0x5FC8d32690cc91D4c39d9d3abcBD16989F875707);
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");

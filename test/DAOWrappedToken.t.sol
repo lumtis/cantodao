@@ -18,18 +18,12 @@ contract DAOWrappedTokenTest is Test {
         assetToken.mint(address(0x456), 1000);
 
         turnstile = new Turnstile();
-        token = new DAOWrappedToken(
-            "Test",
-            "TST",
-            assetToken,
-            turnstile,
-            address(0x123)
-        );
+        token = new DAOWrappedToken(assetToken, turnstile, address(0x123));
     }
 
     function testInstantiated() public {
-        assertEq(token.name(), "Test");
-        assertEq(token.symbol(), "TST");
+        assertEq(token.name(), "Asset DAO token");
+        assertEq(token.symbol(), "daoAST");
         assertEq(token.totalSupply(), 0);
         assertEq(token.asset(), address(assetToken));
         assertEq(token.votingModuleType(), 1);
