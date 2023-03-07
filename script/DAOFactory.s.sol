@@ -6,8 +6,7 @@ import "../src/deployers/DAOGovernorDeployer.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
-import "../src/DAOFactoryNewToken.sol";
-import "../src/DAOFactoryExistingToken.sol";
+import "../src/DAOFactory.sol";
 import "../src/testnet/Turnstile.sol";
 
 // DAOFactory script
@@ -26,22 +25,14 @@ contract DAOFactoryScript is Script {
         DAOProposerDeployer proposerDeployer = new DAOProposerDeployer();
 
         // Deploy DAOFactory
-        DAOFactoryNewToken daoFactory = new DAOFactoryNewToken(
+        DAOFactory daoFactory = new DAOFactory(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
+            IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer)),
             turnstile
         );
         daoFactory = daoFactory;
-
-        // Deploy DAOFactory with existing token
-        DAOFactoryExistingToken daoFactoryExistingToken = new DAOFactoryExistingToken(
-                IDAOGovernorDeployer(address(governorDeployer)),
-                IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
-                IDAOProposerDeployer(address(proposerDeployer)),
-                turnstile
-            );
-        daoFactoryExistingToken = daoFactoryExistingToken;
 
         vm.stopBroadcast();
     }

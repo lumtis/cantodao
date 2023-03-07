@@ -7,13 +7,14 @@ import "forge-std/Test.sol";
 
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 
-import "../src/DAOFactoryNewToken.sol";
+import "../src/DAOFactory.sol";
 import "../src/DAOProposer.sol";
 import "../src/DAOToken.sol";
 import "../src/DAOGovernor.sol";
 
 import "../src/deployers/DAOGovernorDeployer.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
+import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
 import "../src/testnet/Turnstile.sol";
 
@@ -26,8 +27,9 @@ contract IntegrationTest is Test {
 
     DAOGovernorDeployer governorDeployer;
     DAOTokenDeployer tokenDeployer;
+    DAOWrappedTokenDeployer wrappedTokenDeployer;
     DAOProposerDeployer proposerDeployer;
-    DAOFactoryNewToken factory;
+    DAOFactory factory;
 
     DAOGovernor dao;
     DAOToken token;
@@ -43,10 +45,12 @@ contract IntegrationTest is Test {
         Turnstile turnstile = new Turnstile();
         governorDeployer = new DAOGovernorDeployer();
         tokenDeployer = new DAOTokenDeployer(turnstile);
+        wrappedTokenDeployer = new DAOWrappedTokenDeployer(turnstile);
         proposerDeployer = new DAOProposerDeployer();
-        factory = new DAOFactoryNewToken(
+        factory = new DAOFactory(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
+            IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer)),
             turnstile
         );
@@ -76,7 +80,7 @@ contract IntegrationTest is Test {
             address daoAddress,
             address tokenAddress,
             address proposerAddress
-        ) = factory.createDAO(data, tokenInfo, params, proposerInfo);
+        ) = factory.createDAONewToken(data, tokenInfo, params, proposerInfo);
         dao = DAOGovernor(payable(daoAddress));
         token = DAOToken(tokenAddress);
         proposer = DAOProposer(proposerAddress);

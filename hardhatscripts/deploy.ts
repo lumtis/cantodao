@@ -46,41 +46,19 @@ export const DeployFactory = async () => {
   const daoProposerDeployer = await DAOProposerDeployer.deploy();
   await daoProposerDeployer.deployed();
 
-  // Factory new token
-  const DAOFactoryNewToken = await ethers.getContractFactory(
-    "DAOFactoryNewToken"
-  );
-  const daoFactoryNewToken = await DAOFactoryNewToken.deploy(
+  // Factory
+  const DAOFactory = await ethers.getContractFactory("DAOFactory");
+  const daoFactory = await DAOFactory.deploy(
     daoGovernorDeployer.address,
     daoTokenDeployer.address,
+    daoWrappedTokenDeployer.address,
     daoProposerDeployer.address,
     turnstile.address
   );
-  await daoFactoryNewToken.deployed();
-
-  // Factory existing token
-  const DAOFactoryExistingToken = await ethers.getContractFactory(
-    "DAOFactoryNewToken"
-  );
-  const daoFactoryExistingToken = await DAOFactoryExistingToken.deploy(
-    daoGovernorDeployer.address,
-    daoTokenDeployer.address,
-    daoProposerDeployer.address,
-    turnstile.address
-  );
-  await daoFactoryExistingToken.deployed();
+  await daoFactory.deployed();
 
   console.table([
-    [
-      "daoFactoryNewToken",
-      daoFactoryNewToken.address,
-      await getBytecodeSize(daoFactoryNewToken),
-    ],
-    [
-      "daoFactoryExistingToken",
-      daoFactoryExistingToken.address,
-      await getBytecodeSize(daoFactoryExistingToken),
-    ],
+    ["daoFactory", daoFactory.address, await getBytecodeSize(daoFactory)],
   ]);
 };
 

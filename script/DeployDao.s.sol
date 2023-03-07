@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../src/DAOFactoryNewToken.sol";
+import "../src/DAOFactory.sol";
 
 // DeployDao script
 contract DeployDao is Script {
-    DAOFactoryNewToken public daoFactory =
-        DAOFactoryNewToken(0x5FC8d32690cc91D4c39d9d3abcBD16989F875707);
+    DAOFactory public daoFactory =
+        DAOFactory(0x5fc8d32690cc91d4c39d9d3abcbd16989f875707);
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -30,7 +30,7 @@ contract DeployDao is Script {
         });
         DaoProposer memory proposerInfo = DaoProposer({minimalVotingPower: 0});
 
-        daoFactory.createDAO(data, tokenInfo, params, proposerInfo);
+        daoFactory.createDAONewToken(data, tokenInfo, params, proposerInfo);
 
         DaoData memory data2 = DaoData({
             name: "Canto DAO",
@@ -43,7 +43,7 @@ contract DeployDao is Script {
             initialSupply: 6000000 * (10 ** 16)
         });
 
-        daoFactory.createDAO(data2, tokenInfo2, params, proposerInfo);
+        daoFactory.createDAONewToken(data2, tokenInfo2, params, proposerInfo);
 
         vm.stopBroadcast();
     }
