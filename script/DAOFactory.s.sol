@@ -4,8 +4,10 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import "../src/deployers/DAOGovernorDeployer.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
+import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
-import "../src/DAOFactory.sol";
+import "../src/DAOFactoryNewToken.sol";
+import "../src/DAOFactoryExistingToken.sol";
 import "../src/testnet/Turnstile.sol";
 
 // DAOFactory script
@@ -18,17 +20,28 @@ contract DAOFactoryScript is Script {
         Turnstile turnstile = new Turnstile();
         DAOGovernorDeployer governorDeployer = new DAOGovernorDeployer();
         DAOTokenDeployer tokenDeployer = new DAOTokenDeployer(turnstile);
+        DAOWrappedTokenDeployer wrappedTokenDeployer = new DAOWrappedTokenDeployer(
+                turnstile
+            );
         DAOProposerDeployer proposerDeployer = new DAOProposerDeployer();
 
         // Deploy DAOFactory
-        DAOFactory daoFactory = new DAOFactory(
+        DAOFactoryNewToken daoFactory = new DAOFactoryNewToken(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer)),
             turnstile
         );
-        // Remove warning
         daoFactory = daoFactory;
+
+        // Deploy DAOFactory with existing token
+        DAOFactoryExistingToken daoFactoryExistingToken = new DAOFactoryExistingToken(
+                IDAOGovernorDeployer(address(governorDeployer)),
+                IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
+                IDAOProposerDeployer(address(proposerDeployer)),
+                turnstile
+            );
+        daoFactoryExistingToken = daoFactoryExistingToken;
 
         vm.stopBroadcast();
     }

@@ -34,7 +34,7 @@ contract DAOProposer {
     IProposalReceiver public daoGovernor;
 
     // Proposal condition
-    uint256 public mininalVotingPower = 0;
+    uint256 public minimalVotingPower = 0;
 
     // Proposal data
     uint256 public proposalCount = 0;
@@ -43,7 +43,7 @@ contract DAOProposer {
     mapping(uint256 => address) public proposalCreator;
 
     constructor(uint256 _mininalVotingPower) {
-        mininalVotingPower = _mininalVotingPower;
+        minimalVotingPower = _mininalVotingPower;
     }
 
     modifier onlyGovernor() {
@@ -58,7 +58,7 @@ contract DAOProposer {
         require(address(daoGovernor) != address(0), "DAO governor not set");
         require(
             daoGovernor.votingModule().getVotes(msg.sender) >=
-                mininalVotingPower,
+                minimalVotingPower,
             "Minimal vote requirement not met"
         );
         _;
@@ -78,7 +78,7 @@ contract DAOProposer {
     function setMinimalVotingPower(
         uint256 _mininalVotingPower
     ) public onlyGovernor {
-        mininalVotingPower = _mininalVotingPower;
+        minimalVotingPower = _mininalVotingPower;
     }
 
     function getProposalCreator(uint256 id) public view returns (address) {

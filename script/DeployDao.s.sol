@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../src/DAOFactory.sol";
+import "../src/DAOFactoryNewToken.sol";
 
 // DeployDao script
 contract DeployDao is Script {
-    DAOFactory public daoFactory =
-        DAOFactory(0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9);
+    DAOFactoryNewToken public daoFactory =
+        DAOFactoryNewToken(0x5FC8d32690cc91D4c39d9d3abcBD16989F875707);
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -33,7 +33,7 @@ contract DeployDao is Script {
         daoFactory.createDAO(data, tokenInfo, params, proposerInfo);
 
         DaoData memory data2 = DaoData({
-            name: "Canto DsAO",
+            name: "Canto DAO",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             image: "https://i.imgur.com/5dCmheE.png"
         });

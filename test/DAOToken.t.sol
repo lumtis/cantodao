@@ -30,6 +30,7 @@ contract DAOTokenTest is Test {
         assertEq(token.symbol(), "TST");
         assertEq(token.totalSupply(), 1000000);
         assertEq(token.balanceOf(funded), 1000000);
+        assertEq(token.votingModuleType(), 0);
 
         // Check turnstile is minted to turnstile owner
         assertEq(

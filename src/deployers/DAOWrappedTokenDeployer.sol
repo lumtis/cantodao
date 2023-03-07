@@ -1,45 +1,40 @@
 // SPDX-License-Identifier: APACHE-2.0
 pragma solidity ^0.8.17;
 
-import "../DAOToken.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../DAOWrappedToken.sol";
 import "../ITurnstile.sol";
 
-interface IDAOTokenDeployer {
-    function deployDAOToken(
+interface IDAOWrappedTokenDeployer {
+    function deployDAOWrappedToken(
         string memory _name,
         string memory _symbol,
-        address _fundedAddress,
-        uint256 _initialSupply,
+        IERC20 _assetToken,
         address _turnstileOwner
     ) external returns (address, uint256);
 }
 
-contract DAOTokenDeployer {
+contract DAOWrappedTokenDeployer {
     ITurnstile immutable turnstile;
 
     constructor(ITurnstile _turnstile) {
         turnstile = _turnstile;
     }
 
-    function deployDAOToken(
+    function deployDAOWrappedToken(
         string memory _name,
         string memory _symbol,
-        address _fundedAddress,
-        uint256 _initialSupply,
+        IERC20 _assetToken,
         address _turnstileOwner
     ) external returns (address, uint256) {
-        DAOToken daoToken = new DAOToken(
+        DAOWrappedToken daoWrappedToken = new DAOWrappedToken(
             _name,
             _symbol,
-            _fundedAddress,
-            _initialSupply,
+            _assetToken,
             turnstile,
             _turnstileOwner
         );
 
-        // Transfer ownership of the token to the sender
-        daoToken.transferOwnership(msg.sender);
-
-        return (address(daoToken), daoToken.turnstileTokenId());
+        return (address(daoWrappedToken), daoWrappedToken.turnstileTokenId());
     }
 }

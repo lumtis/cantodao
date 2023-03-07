@@ -7,7 +7,7 @@ import "forge-std/Test.sol";
 
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 
-import "../src/DAOFactory.sol";
+import "../src/DAOFactoryNewToken.sol";
 import "../src/DAOProposer.sol";
 import "../src/DAOToken.sol";
 import "../src/DAOGovernor.sol";
@@ -27,7 +27,7 @@ contract IntegrationTest is Test {
     DAOGovernorDeployer governorDeployer;
     DAOTokenDeployer tokenDeployer;
     DAOProposerDeployer proposerDeployer;
-    DAOFactory factory;
+    DAOFactoryNewToken factory;
 
     DAOGovernor dao;
     DAOToken token;
@@ -44,7 +44,7 @@ contract IntegrationTest is Test {
         governorDeployer = new DAOGovernorDeployer();
         tokenDeployer = new DAOTokenDeployer(turnstile);
         proposerDeployer = new DAOProposerDeployer();
-        factory = new DAOFactory(
+        factory = new DAOFactoryNewToken(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer)),

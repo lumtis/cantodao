@@ -18,7 +18,7 @@ contract DAOProposerTest is Test {
 
     function testInstantiated() public {
         assertEq(proposer.proposalCount(), 0);
-        assertEq(proposer.mininalVotingPower(), mininalVote);
+        assertEq(proposer.minimalVotingPower(), mininalVote);
     }
 
     function testCanSetGovernor() public {
@@ -38,7 +38,7 @@ contract DAOProposerTest is Test {
         proposer.setGovernor(IProposalReceiver(address(governor)));
         vm.prank(address(governor));
         proposer.setMinimalVotingPower(10);
-        assertEq(proposer.mininalVotingPower(), 10);
+        assertEq(proposer.minimalVotingPower(), 10);
     }
 
     function testFailNonGovernorSetMinimalVotingPower() public {

@@ -28,14 +28,14 @@ contract DAOGovernor is
         string memory _name,
         string memory _description,
         string memory _imageURL,
-        IVotes _token,
+        IVotes _votingModule,
         address _proposer,
         uint256 _quorumFraction,
         uint256 _votingDelay,
         uint256 _votingPeriod
     )
         Governor(_name)
-        GovernorVotes(_token)
+        GovernorVotes(_votingModule)
         GovernorVotesQuorumFraction(_quorumFraction)
     {
         daoVotingDelay = _votingDelay;

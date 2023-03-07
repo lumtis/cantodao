@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 
-import "../src/DAOFactory.sol";
+import "../src/DAOFactoryNewToken.sol";
 import "../src/DAOProposer.sol";
 import "../src/DAOToken.sol";
 import "../src/DAOGovernor.sol";
@@ -19,18 +19,18 @@ uint256 constant votingDelay = 0;
 uint256 constant votingPeriod = 360; // around 30 minutes
 uint constant minimalVotingPower = 1000;
 
-contract DAOFactoryTest is Test {
+contract DAOFactoryNewTokenTest is Test {
     DAOGovernorDeployer governorDeployer;
     DAOTokenDeployer tokenDeployer;
     DAOProposerDeployer proposerDeployer;
-    DAOFactory factory;
+    DAOFactoryNewToken factory;
 
     function setUp() public {
         Turnstile turnstile = new Turnstile();
         governorDeployer = new DAOGovernorDeployer();
         tokenDeployer = new DAOTokenDeployer(turnstile);
         proposerDeployer = new DAOProposerDeployer();
-        factory = new DAOFactory(
+        factory = new DAOFactoryNewToken(
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer)),
@@ -50,7 +50,7 @@ contract DAOFactoryTest is Test {
         );
     }
 
-    function testCanCreateDAO() public {
+    function testCanCreateDAOWithNewToken() public {
         DaoData memory data = DaoData({
             name: "daoTest",
             description: "daoDescription",
@@ -94,7 +94,7 @@ contract DAOFactoryTest is Test {
 
         DAOProposer proposerContract = DAOProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
-        assertEq(proposerContract.mininalVotingPower(), minimalVotingPower);
+        assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
 
         DaoData memory data2 = DaoData({
             name: "daoTest2",
@@ -141,6 +141,6 @@ contract DAOFactoryTest is Test {
 
         proposerContract = DAOProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
-        assertEq(proposerContract.mininalVotingPower(), minimalVotingPower);
+        assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
     }
 }

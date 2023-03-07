@@ -30,6 +30,15 @@ export const DeployFactory = async () => {
   const daoTokenDeployer = await DAOTokenDeployer.deploy(turnstile.address);
   await daoTokenDeployer.deployed();
 
+  // Wrapped token
+  const DAOWrappedTokenDeployer = await ethers.getContractFactory(
+    "DAOWrappedTokenDeployer"
+  );
+  const daoWrappedTokenDeployer = await DAOTokenDeployer.deploy(
+    turnstile.address
+  );
+  await daoTokenDeployer.deployed();
+
   // Proposer
   const DAOProposerDeployer = await ethers.getContractFactory(
     "DAOProposerDeployer"
@@ -37,38 +46,42 @@ export const DeployFactory = async () => {
   const daoProposerDeployer = await DAOProposerDeployer.deploy();
   await daoProposerDeployer.deployed();
 
-  // Factory
-  const DAOFactory = await ethers.getContractFactory("DAOFactory");
-  const daoFactory = await DAOFactory.deploy(
+  // Factory new token
+  const DAOFactoryNewToken = await ethers.getContractFactory(
+    "DAOFactoryNewToken"
+  );
+  const daoFactoryNewToken = await DAOFactoryNewToken.deploy(
     daoGovernorDeployer.address,
     daoTokenDeployer.address,
     daoProposerDeployer.address,
     turnstile.address
   );
-  await daoFactory.deployed();
+  await daoFactoryNewToken.deployed();
+
+  // Factory existing token
+  const DAOFactoryExistingToken = await ethers.getContractFactory(
+    "DAOFactoryNewToken"
+  );
+  const daoFactoryExistingToken = await DAOFactoryExistingToken.deploy(
+    daoGovernorDeployer.address,
+    daoTokenDeployer.address,
+    daoProposerDeployer.address,
+    turnstile.address
+  );
+  await daoFactoryExistingToken.deployed();
 
   console.table([
     [
-      "daoGovernorDeployer",
-      daoGovernorDeployer.address,
-      await getBytecodeSize(daoGovernorDeployer),
+      "daoFactoryNewToken",
+      daoFactoryNewToken.address,
+      await getBytecodeSize(daoFactoryNewToken),
     ],
     [
-      "daoTokenDeployer",
-      daoTokenDeployer.address,
-      await getBytecodeSize(daoTokenDeployer),
+      "daoFactoryExistingToken",
+      daoFactoryExistingToken.address,
+      await getBytecodeSize(daoFactoryExistingToken),
     ],
-    [
-      "daoProposerDeployer",
-      daoProposerDeployer.address,
-      await getBytecodeSize(daoProposerDeployer),
-    ],
-    ["daoFactory", daoFactory.address, await getBytecodeSize(daoFactory)],
   ]);
-
-  return {
-    daoFactory,
-  };
 };
 
 const main = async () => {

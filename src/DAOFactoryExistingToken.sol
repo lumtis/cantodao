@@ -5,38 +5,24 @@ import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./deployers/DAOGovernorDeployer.sol";
-import "./deployers/DAOTokenDeployer.sol";
+import "./deployers/DAOWrappedTokenDeployer.sol";
 import "./deployers/DAOProposerDeployer.sol";
 import "./DAOGovernor.sol";
+import "./DAOFactoryNewToken.sol";
 
-struct DaoData {
-    string name;
-    string description;
-    string image;
-}
-
-struct DaoToken {
+struct DaoWrappedToken {
     string name;
     string symbol;
-    uint256 initialSupply;
+    IERC20 assetToken;
 }
 
-struct DaoParams {
-    uint256 quorumFraction;
-    uint256 votingDelay;
-    uint256 votingPeriod;
-}
-
-struct DaoProposer {
-    uint256 minimalVotingPower;
-}
-
-contract DAOFactory {
+contract DAOFactoryExistingToken {
     // Deployer contracts
     IDAOGovernorDeployer public governorDeployer;
-    IDAOTokenDeployer public tokenDeployer;
+    IDAOWrappedTokenDeployer public tokenDeployer;
     IDAOProposerDeployer public proposerDeployer;
     IERC721 immutable turnstile;
 
@@ -51,7 +37,7 @@ contract DAOFactory {
 
     constructor(
         IDAOGovernorDeployer _governorDeployer,
-        IDAOTokenDeployer _tokenDeployer,
+        IDAOWrappedTokenDeployer _tokenDeployer,
         IDAOProposerDeployer _proposerDeployer,
         IERC721 _turnstile
     ) {
@@ -73,7 +59,7 @@ contract DAOFactory {
 
     function createDAO(
         DaoData memory _data,
-        DaoToken memory _token,
+        DaoWrappedToken memory _token,
         DaoParams memory _params,
         DaoProposer memory _proposer
     ) external returns (address, address, address) {
@@ -82,7 +68,7 @@ contract DAOFactory {
             _proposer.minimalVotingPower
         );
 
-        // Deploy governance token
+        // Deploy governance token based on existing token
         (address token, uint256 turnstileTokenId) = _deployToken(_token);
 
         // Deploy the DAO governor
@@ -90,9 +76,6 @@ contract DAOFactory {
 
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
-
-        // Transfer ownership of the token to the DAO
-        Ownable(token).transferOwnership(address(dao));
 
         // Transfer the token DAO turnstile to the DAO
         turnstile.transferFrom(address(this), address(dao), turnstileTokenId);
@@ -111,14 +94,13 @@ contract DAOFactory {
     }
 
     function _deployToken(
-        DaoToken memory _token
+        DaoWrappedToken memory _token
     ) internal returns (address, uint256) {
         return
-            tokenDeployer.deployDAOToken(
+            tokenDeployer.deployDAOWrappedToken(
                 _token.name,
                 _token.symbol,
-                msg.sender,
-                _token.initialSupply,
+                _token.assetToken,
                 address(this)
             );
     }
