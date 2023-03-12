@@ -1,6 +1,6 @@
-import "@nomicfoundation/hardhat-toolbox";
+import '@nomicfoundation/hardhat-toolbox';
 
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig } from 'hardhat/config';
 
 // A mnemonic with no fund, just used to prevent the scripts from failing
 const sampleMnemonic =
@@ -12,8 +12,8 @@ const config: HardhatUserConfig = {
   },
   networks: {
     cantotest: {
-      url: "https://eth.plexnode.wtf/",
-      chainId: 740,
+      url: "https://canto-testnet.plexnode.wtf",
+      chainId: 7701,
       accounts: {
         mnemonic: process.env.TESTNET_MNEMONIC || sampleMnemonic,
       },

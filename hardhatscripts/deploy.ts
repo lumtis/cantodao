@@ -13,6 +13,8 @@ const getBytecodeSize = async (contract: any) => {
 };
 
 export const DeployFactory = async () => {
+  const turnstileAddress = "0xEcf044C5B4b867CFda001101c617eCd347095B44";
+
   // Governor
   const DAOGovernorDeployer = await ethers.getContractFactory(
     "DAOGovernorDeployer"
@@ -20,22 +22,17 @@ export const DeployFactory = async () => {
   const daoGovernorDeployer = await DAOGovernorDeployer.deploy();
   await daoGovernorDeployer.deployed();
 
-  // Turnstile
-  const Turnstile = await ethers.getContractFactory("Turnstile");
-  const turnstile = await Turnstile.deploy();
-  await turnstile.deployed();
-
   // Token
   const DAOTokenDeployer = await ethers.getContractFactory("DAOTokenDeployer");
-  const daoTokenDeployer = await DAOTokenDeployer.deploy(turnstile.address);
+  const daoTokenDeployer = await DAOTokenDeployer.deploy(turnstileAddress);
   await daoTokenDeployer.deployed();
 
   // Wrapped token
   const DAOWrappedTokenDeployer = await ethers.getContractFactory(
     "DAOWrappedTokenDeployer"
   );
-  const daoWrappedTokenDeployer = await DAOTokenDeployer.deploy(
-    turnstile.address
+  const daoWrappedTokenDeployer = await DAOWrappedTokenDeployer.deploy(
+    turnstileAddress
   );
   await daoTokenDeployer.deployed();
 
@@ -53,7 +50,7 @@ export const DeployFactory = async () => {
     daoTokenDeployer.address,
     daoWrappedTokenDeployer.address,
     daoProposerDeployer.address,
-    turnstile.address
+    turnstileAddress
   );
   await daoFactory.deployed();
 

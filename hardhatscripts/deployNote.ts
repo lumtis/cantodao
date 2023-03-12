@@ -3,12 +3,7 @@ import { ethers } from 'hardhat';
 
 const main = async () => {
   const [owner] = await ethers.getSigners();
-
-  // Deploy turnstile
-  // We don't need to use the same contract as the factory one for test purpose
-  const Turnstile = await ethers.getContractFactory("Turnstile");
-  const turnstile = await Turnstile.deploy();
-  await turnstile.deployed();
+  const turnstileAddress = "0xEcf044C5B4b867CFda001101c617eCd347095B44";
 
   // Deploy the contract
   const DAOToken = await ethers.getContractFactory("DAOToken");
@@ -17,7 +12,7 @@ const main = async () => {
     "NOTE",
     owner.address,
     BigNumber.from("100000000000000000000000"),
-    turnstile.address,
+    turnstileAddress,
     owner.address
   );
   await daoToken.deployed();
