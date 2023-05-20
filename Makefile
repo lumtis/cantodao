@@ -15,26 +15,9 @@ deploy-factory-dry:
 deploy-factory-local:
 	forge script script/DAOFactory.s.sol:DAOFactoryScript -f http://0.0.0.0:8545 --chain-id 1337 --broadcast
 
-.PHONY: deploy-factory-cantotest
-deploy-factory-cantotest:
-	forge script script/DAOFactory.s.sol:DAOFactoryScript --rpc-url https://canto-testnet.plexnode.wtf --chain-id 740 --broadcast
-
-.PHONY: deploy-dao-local
-deploy-dao-local:
-	forge script script/DeployDao.s.sol:DeployDao -f http://0.0.0.0:8545 --chain-id 1337 --broadcast
-
-.PHONY: deploy-note-local
-deploy-note-local:
-	forge script script/DeployNote.s.sol:DeployNote -f http://0.0.0.0:8545 --chain-id 1337 --broadcast
-
-.PHONY: deploy-note-cantotest
-deploy-note-cantotest:
-	forge script script/DeployNote.s.sol:DeployNote -f https://eth.plexnode.wtf/ --chain-id 740 --broadcast
-
-.PHONY: transfer-tokens-local
-transfer-tokens-local:
-	forge script script/local/TransferTokens.s.sol:TransferTokens -f http://0.0.0.0:8545 --chain-id 1337 --broadcast
-
+.PHONY: deploy-factory-arbitrum
+deploy-factory-arbitrum:
+	forge script script/DAOFactory.s.sol:DAOFactoryScript -f https://arb1.arbitrum.io/rpc --chain-id 42161 --broadcast
 
 .PHONY: network
 network:
