@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 // Deploy a simple ERC20 token that represents Canto Note
 
 import "forge-std/Script.sol";
-import "../src/DAOToken.sol";
+import "../src/votes/DAOToken.sol";
 
 contract DeployNote is Script {
     function run() public {

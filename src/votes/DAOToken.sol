@@ -8,7 +8,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 uint8 constant DAOTOKEN_DECIMALS = 18;
 
-// A regular ERC20 token with voting power and mintable by the owner
+/**
+ * @title DAOToken
+ * @dev A regular ERC20 token with voting power and mintable by the owner
+ */
 contract DAOToken is ERC20, ERC20Permit, ERC20Votes, Ownable {
     constructor(
         string memory _name,

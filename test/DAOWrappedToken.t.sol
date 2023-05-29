@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 
-import "../src/DAOWrappedToken.sol";
+import "../src/votes/DAOWrappedToken.sol";
 import "./mocks/Token.sol";
 
 contract DAOWrappedTokenTest is Test {

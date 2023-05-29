@@ -9,12 +9,12 @@ import "@openzeppelin/contracts/governance/IGovernor.sol";
 
 import "../src/DAOFactory.sol";
 import "../src/proposer/OnChainProposer.sol";
-import "../src/DAOToken.sol";
+import "../src/votes/DAOToken.sol";
 import "../src/governor/SimpleGovernor.sol";
 
 import "../src/deployers/SimpleGovernorFactory.sol";
-import "../src/deployers/DAOTokenDeployer.sol";
-import "../src/deployers/DAOWrappedTokenDeployer.sol";
+import "../src/deployers/DAOTokenFactory.sol";
+import "../src/deployers/DAOWrappedTokenFactory.sol";
 import "../src/deployers/OnChainProposerFactory.sol";
 
 contract IntegrationTest is Test {
@@ -25,8 +25,8 @@ contract IntegrationTest is Test {
     }
 
     SimpleGovernorFactory governorFactory;
-    DAOTokenDeployer tokenDeployer;
-    DAOWrappedTokenDeployer wrappedTokenDeployer;
+    DAOTokenFactory tokenFactory;
+    DAOWrappedTokenFactory wrappedTokenFactory;
     OnChainProposerFactory proposerFactory;
     DAOFactory factory;
 
@@ -42,13 +42,13 @@ contract IntegrationTest is Test {
 
         // Create factory
         governorFactory = new SimpleGovernorFactory();
-        tokenDeployer = new DAOTokenDeployer();
-        wrappedTokenDeployer = new DAOWrappedTokenDeployer();
+        tokenFactory = new DAOTokenFactory();
+        wrappedTokenFactory = new DAOWrappedTokenFactory();
         proposerFactory = new OnChainProposerFactory();
         factory = new DAOFactory(
             ISimpleGovernorFactory(address(governorFactory)),
-            IDAOTokenDeployer(address(tokenDeployer)),
-            IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
+            IDAOTokenFactory(address(tokenFactory)),
+            IDAOWrappedTokenFactory(address(wrappedTokenFactory)),
             IOnChainProposerFactory(address(proposerFactory))
         );
 

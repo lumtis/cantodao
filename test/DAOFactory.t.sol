@@ -5,12 +5,12 @@ import "forge-std/Test.sol";
 
 import "../src/DAOFactory.sol";
 import "../src/proposer/OnChainProposer.sol";
-import "../src/DAOToken.sol";
+import "../src/votes/DAOToken.sol";
 import "../src/governor/SimpleGovernor.sol";
 
 import "../src/deployers/SimpleGovernorFactory.sol";
-import "../src/deployers/DAOTokenDeployer.sol";
-import "../src/deployers/DAOWrappedTokenDeployer.sol";
+import "../src/deployers/DAOTokenFactory.sol";
+import "../src/deployers/DAOWrappedTokenFactory.sol";
 import "../src/deployers/OnChainProposerFactory.sol";
 
 import "./mocks/Token.sol";
@@ -24,8 +24,8 @@ uint constant minimalVotingPower = 1000;
 contract DAOFactoryNewTokenTest is Test {
     TokenMock assetToken;
     SimpleGovernorFactory governorFactory;
-    DAOTokenDeployer tokenDeployer;
-    DAOWrappedTokenDeployer wrappedTokenDeployer;
+    DAOTokenFactory tokenFactory;
+    DAOWrappedTokenFactory wrappedTokenFactory;
     OnChainProposerFactory proposerFactory;
     DAOFactory factory;
 
@@ -34,23 +34,23 @@ contract DAOFactoryNewTokenTest is Test {
         assetToken.mint(address(0x123), 1000);
 
         governorFactory = new SimpleGovernorFactory();
-        tokenDeployer = new DAOTokenDeployer();
-        wrappedTokenDeployer = new DAOWrappedTokenDeployer();
+        tokenFactory = new DAOTokenFactory();
+        wrappedTokenFactory = new DAOWrappedTokenFactory();
         proposerFactory = new OnChainProposerFactory();
         factory = new DAOFactory(
             ISimpleGovernorFactory(address(governorFactory)),
-            IDAOTokenDeployer(address(tokenDeployer)),
-            IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
+            IDAOTokenFactory(address(tokenFactory)),
+            IDAOWrappedTokenFactory(address(wrappedTokenFactory)),
             IOnChainProposerFactory(address(proposerFactory))
         );
     }
 
     function testInstantiated() public {
         assertEq(address(factory.governorFactory()), address(governorFactory));
-        assertEq(address(factory.tokenDeployer()), address(tokenDeployer));
+        assertEq(address(factory.tokenFactory()), address(tokenFactory));
         assertEq(
-            address(factory.wrappedTokenDeployer()),
-            address(wrappedTokenDeployer)
+            address(factory.wrappedTokenFactory()),
+            address(wrappedTokenFactory)
         );
         assertEq(address(factory.proposerFactory()), address(proposerFactory));
     }

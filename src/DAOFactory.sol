@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/interfaces/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./deployers/SimpleGovernorFactory.sol";
-import "./deployers/DAOTokenDeployer.sol";
-import "./deployers/DAOWrappedTokenDeployer.sol";
+import "./deployers/DAOTokenFactory.sol";
+import "./deployers/DAOWrappedTokenFactory.sol";
 import "./deployers/OnChainProposerFactory.sol";
 import "./governor/SimpleGovernor.sol";
 
@@ -41,8 +41,8 @@ struct DaoProposer {
 contract DAOFactory {
     // Factory contracts
     ISimpleGovernorFactory public governorFactory;
-    IDAOTokenDeployer public tokenDeployer;
-    IDAOWrappedTokenDeployer public wrappedTokenDeployer;
+    IDAOTokenFactory public tokenFactory;
+    IDAOWrappedTokenFactory public wrappedTokenFactory;
     IOnChainProposerFactory public proposerFactory;
 
     address[] public daos;
@@ -51,13 +51,13 @@ contract DAOFactory {
 
     constructor(
         ISimpleGovernorFactory _governorFactory,
-        IDAOTokenDeployer _tokenDeployer,
-        IDAOWrappedTokenDeployer _wrappedTokenDeployer,
+        IDAOTokenFactory _tokenFactory,
+        IDAOWrappedTokenFactory _wrappedTokenFactory,
         IOnChainProposerFactory _proposerFactory
     ) {
         governorFactory = _governorFactory;
-        tokenDeployer = _tokenDeployer;
-        wrappedTokenDeployer = _wrappedTokenDeployer;
+        tokenFactory = _tokenFactory;
+        wrappedTokenFactory = _wrappedTokenFactory;
         proposerFactory = _proposerFactory;
     }
 
@@ -142,7 +142,7 @@ contract DAOFactory {
 
     function _deployToken(DaoToken memory _token) internal returns (address) {
         return
-            tokenDeployer.deployDAOToken(
+            tokenFactory.deployDAOToken(
                 _token.name,
                 _token.symbol,
                 msg.sender,
@@ -153,7 +153,7 @@ contract DAOFactory {
     function _deployWrappedToken(
         DaoWrappedToken memory _token
     ) internal returns (address) {
-        return wrappedTokenDeployer.deployDAOWrappedToken(_token.assetToken);
+        return wrappedTokenFactory.deployDAOWrappedToken(_token.assetToken);
     }
 
     function _deployDao(

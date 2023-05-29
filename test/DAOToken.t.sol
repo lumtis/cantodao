@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 
-import "../src/DAOToken.sol";
+import "../src/votes/DAOToken.sol";
 
 contract DAOTokenTest is Test {
     DAOToken token;

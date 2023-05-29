@@ -9,7 +9,10 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./DAOToken.sol";
 
-// Governance token that represents an existing token wrapped
+/**
+ * @title DAOWrappedToken
+ * @dev Governance token that represents an existing token wrapped
+ */
 contract DAOWrappedToken is ERC20, ERC20Permit, ERC20Votes, ERC4626 {
     constructor(
         ERC20 _token
