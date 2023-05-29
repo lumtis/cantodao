@@ -5,26 +5,18 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./ITurnstile.sol";
 
 uint8 constant DAOTOKEN_DECIMALS = 18;
 
 // A regular ERC20 token with voting power and mintable by the owner
 contract DAOToken is ERC20, ERC20Permit, ERC20Votes, Ownable {
-    ITurnstile immutable turnstile;
-    uint256 public immutable turnstileTokenId;
-
     constructor(
         string memory _name,
         string memory _symbol,
         address _fundedAddress,
-        uint256 _initialSupply,
-        ITurnstile _turnstile,
-        address _turnstileOwner
+        uint256 _initialSupply
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         _mint(_fundedAddress, _initialSupply);
-        turnstile = _turnstile;
-        turnstileTokenId = turnstile.register(_turnstileOwner);
     }
 
     function votingModuleType() public pure returns (uint8) {

@@ -7,18 +7,12 @@ import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./ITurnstile.sol";
 import "./DAOToken.sol";
 
 // Governance token that represents an existing token wrapped
 contract DAOWrappedToken is ERC20, ERC20Permit, ERC20Votes, ERC4626 {
-    ITurnstile immutable turnstile;
-    uint256 public immutable turnstileTokenId;
-
     constructor(
-        ERC20 _token,
-        ITurnstile _turnstile,
-        address _turnstileOwner
+        ERC20 _token
     )
         ERC20(
             string.concat(_token.name(), " DAO token"),
@@ -26,10 +20,7 @@ contract DAOWrappedToken is ERC20, ERC20Permit, ERC20Votes, ERC4626 {
         )
         ERC20Permit(string.concat(_token.name(), " DAO token"))
         ERC4626(_token)
-    {
-        turnstile = _turnstile;
-        turnstileTokenId = turnstile.register(_turnstileOwner);
-    }
+    {}
 
     function votingModuleType() public pure returns (uint8) {
         return 1;

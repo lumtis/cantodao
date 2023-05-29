@@ -5,20 +5,17 @@ import "forge-std/Test.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 
 import "../src/DAOWrappedToken.sol";
-import "../src/testnet/Turnstile.sol";
 import "./mocks/Token.sol";
 
 contract DAOWrappedTokenTest is Test {
     TokenMock assetToken;
     DAOWrappedToken token;
-    Turnstile turnstile;
 
     function setUp() public {
         assetToken = new TokenMock("Asset", "AST");
         assetToken.mint(address(0x456), 1000);
 
-        turnstile = new Turnstile();
-        token = new DAOWrappedToken(assetToken, turnstile, address(0x123));
+        token = new DAOWrappedToken(assetToken);
     }
 
     function testInstantiated() public {
@@ -27,12 +24,6 @@ contract DAOWrappedTokenTest is Test {
         assertEq(token.totalSupply(), 0);
         assertEq(token.asset(), address(assetToken));
         assertEq(token.votingModuleType(), 1);
-
-        // Check turnstile is minted to turnstile owner
-        assertEq(
-            IERC721(turnstile).ownerOf(token.turnstileTokenId()),
-            address(0x123)
-        );
     }
 
     function testCanMintTokenAndDelegate() public {

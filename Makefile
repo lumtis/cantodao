@@ -50,4 +50,3 @@ types:
 	out/DAOToken.sol/DAOToken.json \
 	out/DAOWrappedToken.sol/DAOWrappedToken.json \
 	out/DAOProposer.sol/DAOProposer.json \
-	out/Turnstile.sol/Turnstile.json

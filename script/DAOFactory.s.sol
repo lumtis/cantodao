@@ -7,7 +7,6 @@ import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
 import "../src/DAOFactory.sol";
-import "../src/testnet/Turnstile.sol";
 
 // DAOFactory script
 contract DAOFactoryScript is Script {
@@ -16,12 +15,9 @@ contract DAOFactoryScript is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy deployers
-        Turnstile turnstile = new Turnstile();
         DAOGovernorDeployer governorDeployer = new DAOGovernorDeployer();
-        DAOTokenDeployer tokenDeployer = new DAOTokenDeployer(turnstile);
-        DAOWrappedTokenDeployer wrappedTokenDeployer = new DAOWrappedTokenDeployer(
-                turnstile
-            );
+        DAOTokenDeployer tokenDeployer = new DAOTokenDeployer();
+        DAOWrappedTokenDeployer wrappedTokenDeployer = new DAOWrappedTokenDeployer();
         DAOProposerDeployer proposerDeployer = new DAOProposerDeployer();
 
         // Deploy DAOFactory
@@ -29,8 +25,7 @@ contract DAOFactoryScript is Script {
             IDAOGovernorDeployer(address(governorDeployer)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer)),
-            turnstile
+            IDAOProposerDeployer(address(proposerDeployer))
         );
         daoFactory = daoFactory;
 

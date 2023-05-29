@@ -44,7 +44,6 @@ contract DAOFactory {
     IDAOTokenDeployer public tokenDeployer;
     IDAOWrappedTokenDeployer public wrappedTokenDeployer;
     IDAOProposerDeployer public proposerDeployer;
-    IERC721 immutable turnstile;
 
     address[] public daos;
 
@@ -54,14 +53,12 @@ contract DAOFactory {
         IDAOGovernorDeployer _governorDeployer,
         IDAOTokenDeployer _tokenDeployer,
         IDAOWrappedTokenDeployer _wrappedTokenDeployer,
-        IDAOProposerDeployer _proposerDeployer,
-        IERC721 _turnstile
+        IDAOProposerDeployer _proposerDeployer
     ) {
         governorDeployer = _governorDeployer;
         tokenDeployer = _tokenDeployer;
         wrappedTokenDeployer = _wrappedTokenDeployer;
         proposerDeployer = _proposerDeployer;
-        turnstile = _turnstile;
     }
 
     // Get a DAO from its index
@@ -86,7 +83,7 @@ contract DAOFactory {
         );
 
         // Deploy governance token
-        (address token, uint256 turnstileTokenId) = _deployToken(_token);
+        address token = _deployToken(_token);
 
         // Deploy the DAO governor
         DAOGovernor dao = _deployDao(_data, _params, IVotes(token), proposer);
@@ -96,9 +93,6 @@ contract DAOFactory {
 
         // Transfer ownership of the token to the DAO
         Ownable(token).transferOwnership(address(dao));
-
-        // Transfer the token DAO turnstile to the DAO
-        turnstile.transferFrom(address(this), address(dao), turnstileTokenId);
 
         // Add the DAO to the array of DAOs
         daos.push(address(dao));
@@ -120,18 +114,13 @@ contract DAOFactory {
         );
 
         // Deploy governance token based on existing token
-        (address token, uint256 turnstileTokenId) = _deployWrappedToken(
-            _wrappedToken
-        );
+        address token = _deployWrappedToken(_wrappedToken);
 
         // Deploy the DAO governor
         DAOGovernor dao = _deployDao(_data, _params, IVotes(token), proposer);
 
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
-
-        // Transfer the token DAO turnstile to the DAO
-        turnstile.transferFrom(address(this), address(dao), turnstileTokenId);
 
         // Add the DAO to the array of DAOs
         daos.push(address(dao));
@@ -141,27 +130,20 @@ contract DAOFactory {
         return (address(dao), address(token), address(proposer));
     }
 
-    function _deployToken(
-        DaoToken memory _token
-    ) internal returns (address, uint256) {
+    function _deployToken(DaoToken memory _token) internal returns (address) {
         return
             tokenDeployer.deployDAOToken(
                 _token.name,
                 _token.symbol,
                 msg.sender,
-                _token.initialSupply,
-                address(this)
+                _token.initialSupply
             );
     }
 
     function _deployWrappedToken(
         DaoWrappedToken memory _token
-    ) internal returns (address, uint256) {
-        return
-            wrappedTokenDeployer.deployDAOWrappedToken(
-                _token.assetToken,
-                address(this)
-            );
+    ) internal returns (address) {
+        return wrappedTokenDeployer.deployDAOWrappedToken(_token.assetToken);
     }
 
     function _deployDao(
