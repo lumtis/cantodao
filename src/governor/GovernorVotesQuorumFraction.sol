@@ -6,10 +6,9 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "./GovernorVotes.sol";
 
 /**
- * Fork of OpenZeppelin GovernorVotesQuorumFraction contract that removes voting module immutability
+ * @dev Fork of OpenZeppelin GovernorVotesQuorumFraction contract that removes voting module immutability
  * to allow for upgrades through governance
  */
-
 abstract contract GovernorVotesQuorumFraction is GovernorVotes {
     using Checkpoints for Checkpoints.History;
 

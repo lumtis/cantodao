@@ -3,17 +3,17 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "forge-std/Test.sol";
-import "../src/DAOProposer.sol";
+import "../src/proposer/OnChainProposer.sol";
 import "./mocks/ProposalReceiver.sol";
 import "./mocks/Vote.sol";
 
 uint256 constant mininalVote = 1000;
 
-contract DAOProposerTest is Test {
-    DAOProposer proposer;
+contract OnChainProposerTest is Test {
+    OnChainProposer proposer;
 
     function setUp() public {
-        proposer = new DAOProposer(mininalVote);
+        proposer = new OnChainProposer(mininalVote);
     }
 
     function testInstantiated() public {

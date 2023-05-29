@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./deployers/SimpleGovernorFactory.sol";
 import "./deployers/DAOTokenDeployer.sol";
 import "./deployers/DAOWrappedTokenDeployer.sol";
-import "./deployers/DAOProposerDeployer.sol";
+import "./deployers/OnChainProposerFactory.sol";
 import "./governor/SimpleGovernor.sol";
 
 struct DaoData {
@@ -43,7 +43,7 @@ contract DAOFactory {
     ISimpleGovernorFactory public governorFactory;
     IDAOTokenDeployer public tokenDeployer;
     IDAOWrappedTokenDeployer public wrappedTokenDeployer;
-    IDAOProposerDeployer public proposerDeployer;
+    IOnChainProposerFactory public proposerFactory;
 
     address[] public daos;
 
@@ -53,12 +53,12 @@ contract DAOFactory {
         ISimpleGovernorFactory _governorFactory,
         IDAOTokenDeployer _tokenDeployer,
         IDAOWrappedTokenDeployer _wrappedTokenDeployer,
-        IDAOProposerDeployer _proposerDeployer
+        IOnChainProposerFactory _proposerFactory
     ) {
         governorFactory = _governorFactory;
         tokenDeployer = _tokenDeployer;
         wrappedTokenDeployer = _wrappedTokenDeployer;
-        proposerDeployer = _proposerDeployer;
+        proposerFactory = _proposerFactory;
     }
 
     // Get a DAO from its index
@@ -78,7 +78,7 @@ contract DAOFactory {
         DaoProposer memory _proposer
     ) external returns (address, address, address) {
         // Deploy proposer
-        address proposer = proposerDeployer.deployDAOProposer(
+        address proposer = proposerFactory.deployProposer(
             _proposer.minimalVotingPower
         );
 
@@ -114,7 +114,7 @@ contract DAOFactory {
         DaoProposer memory _proposer
     ) external returns (address, address, address) {
         // Deploy proposer
-        address proposer = proposerDeployer.deployDAOProposer(
+        address proposer = proposerFactory.deployProposer(
             _proposer.minimalVotingPower
         );
 

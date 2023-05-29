@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
-import "../src/deployers/DAOProposerDeployer.sol";
+import "../src/deployers/OnChainProposerFactory.sol";
 import "../src/DAOFactory.sol";
 
 // DAOFactory script
@@ -18,14 +18,14 @@ contract DAOFactoryScript is Script {
         SimpleGovernorFactory governorFactory = new SimpleGovernorFactory();
         DAOTokenDeployer tokenDeployer = new DAOTokenDeployer();
         DAOWrappedTokenDeployer wrappedTokenDeployer = new DAOWrappedTokenDeployer();
-        DAOProposerDeployer proposerDeployer = new DAOProposerDeployer();
+        OnChainProposerFactory proposerFactory = new OnChainProposerFactory();
 
         // Deploy DAOFactory
         DAOFactory daoFactory = new DAOFactory(
             ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer))
+            IOnChainProposerFactory(address(proposerFactory))
         );
         daoFactory = daoFactory;
 

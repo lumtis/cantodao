@@ -8,14 +8,14 @@ import "forge-std/Test.sol";
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 
 import "../src/DAOFactory.sol";
-import "../src/DAOProposer.sol";
+import "../src/proposer/OnChainProposer.sol";
 import "../src/DAOToken.sol";
 import "../src/governor/SimpleGovernor.sol";
 
 import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
-import "../src/deployers/DAOProposerDeployer.sol";
+import "../src/deployers/OnChainProposerFactory.sol";
 
 contract IntegrationTest is Test {
     enum VoteType {
@@ -27,12 +27,12 @@ contract IntegrationTest is Test {
     SimpleGovernorFactory governorFactory;
     DAOTokenDeployer tokenDeployer;
     DAOWrappedTokenDeployer wrappedTokenDeployer;
-    DAOProposerDeployer proposerDeployer;
+    OnChainProposerFactory proposerFactory;
     DAOFactory factory;
 
     SimpleGovernor dao;
     DAOToken token;
-    DAOProposer proposer;
+    OnChainProposer proposer;
 
     address deployer;
 
@@ -44,12 +44,12 @@ contract IntegrationTest is Test {
         governorFactory = new SimpleGovernorFactory();
         tokenDeployer = new DAOTokenDeployer();
         wrappedTokenDeployer = new DAOWrappedTokenDeployer();
-        proposerDeployer = new DAOProposerDeployer();
+        proposerFactory = new OnChainProposerFactory();
         factory = new DAOFactory(
             ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer))
+            IOnChainProposerFactory(address(proposerFactory))
         );
 
         // Dao arguments
@@ -80,7 +80,7 @@ contract IntegrationTest is Test {
         ) = factory.createDAONewToken(data, tokenInfo, params, proposerInfo);
         dao = SimpleGovernor(payable(daoAddress));
         token = DAOToken(tokenAddress);
-        proposer = DAOProposer(proposerAddress);
+        proposer = OnChainProposer(proposerAddress);
 
         // Delegate voting power to the deployer
         token.delegate(deployer);

@@ -4,14 +4,14 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 
 import "../src/DAOFactory.sol";
-import "../src/DAOProposer.sol";
+import "../src/proposer/OnChainProposer.sol";
 import "../src/DAOToken.sol";
 import "../src/governor/SimpleGovernor.sol";
 
 import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
-import "../src/deployers/DAOProposerDeployer.sol";
+import "../src/deployers/OnChainProposerFactory.sol";
 
 import "./mocks/Token.sol";
 
@@ -26,7 +26,7 @@ contract DAOFactoryNewTokenTest is Test {
     SimpleGovernorFactory governorFactory;
     DAOTokenDeployer tokenDeployer;
     DAOWrappedTokenDeployer wrappedTokenDeployer;
-    DAOProposerDeployer proposerDeployer;
+    OnChainProposerFactory proposerFactory;
     DAOFactory factory;
 
     function setUp() public {
@@ -36,12 +36,12 @@ contract DAOFactoryNewTokenTest is Test {
         governorFactory = new SimpleGovernorFactory();
         tokenDeployer = new DAOTokenDeployer();
         wrappedTokenDeployer = new DAOWrappedTokenDeployer();
-        proposerDeployer = new DAOProposerDeployer();
+        proposerFactory = new OnChainProposerFactory();
         factory = new DAOFactory(
             ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
-            IDAOProposerDeployer(address(proposerDeployer))
+            IOnChainProposerFactory(address(proposerFactory))
         );
     }
 
@@ -52,10 +52,7 @@ contract DAOFactoryNewTokenTest is Test {
             address(factory.wrappedTokenDeployer()),
             address(wrappedTokenDeployer)
         );
-        assertEq(
-            address(factory.proposerDeployer()),
-            address(proposerDeployer)
-        );
+        assertEq(address(factory.proposerFactory()), address(proposerFactory));
     }
 
     function testCanCreateDAOWithNewToken() public {
@@ -96,7 +93,7 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(tokenContract.totalSupply(), 1000000);
         assertEq(tokenContract.owner(), dao);
 
-        DAOProposer proposerContract = DAOProposer(proposer);
+        OnChainProposer proposerContract = OnChainProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
         assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
 
@@ -143,7 +140,7 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(tokenContract.totalSupply(), 1000000);
         assertEq(tokenContract.owner(), dao);
 
-        proposerContract = DAOProposer(proposer);
+        proposerContract = OnChainProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
         assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
     }
@@ -183,7 +180,7 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(tokenContract.symbol(), "daoAST");
         assertEq(tokenContract.asset(), address(assetToken));
 
-        DAOProposer proposerContract = DAOProposer(proposer);
+        OnChainProposer proposerContract = OnChainProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
         assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
 
@@ -227,7 +224,7 @@ contract DAOFactoryNewTokenTest is Test {
         assertEq(tokenContract.symbol(), "daoAST");
         assertEq(tokenContract.asset(), address(assetToken));
 
-        proposerContract = DAOProposer(proposer);
+        proposerContract = OnChainProposer(proposer);
         assertEq(address(proposerContract.daoGovernor()), dao);
         assertEq(proposerContract.minimalVotingPower(), minimalVotingPower);
     }

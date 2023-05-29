@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./governor/SimpleGovernor.sol";
+import "../governor/SimpleGovernor.sol";
 
 interface IProposalReceiver {
     function propose(
@@ -22,8 +22,12 @@ interface IDAOProposer {
     function setGovernor(SimpleGovernor _governor) external;
 }
 
-// DAOProposer is a simple permissionless proposer contract for DAOGovernor that stores proposal on-chain
-contract DAOProposer {
+/**
+ * @title OnChainProposer
+ * @dev The on-chain proposer is a simple permissionless proposer contract for DAOGovernor that stores proposal on-chain
+ * for guaranteed data availability
+ */
+contract OnChainProposer {
     struct ProposalContent {
         address[] targets;
         uint256[] values;
