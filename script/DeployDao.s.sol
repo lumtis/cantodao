@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../src/DAOFactory.sol";
+import "../src/factory/DAOFactory.sol";
 
 // DeployDao script
 contract DeployDao is Script {

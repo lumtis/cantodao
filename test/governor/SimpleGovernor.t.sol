@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "forge-std/Test.sol";
-import "./mocks/Vote.sol";
-import "../src/governor/SimpleGovernor.sol";
+import "../mocks/Vote.sol";
+import "../../src/governor/SimpleGovernor.sol";
 
 contract SimpleGovernorTest is Test {
     SimpleGovernor dao;

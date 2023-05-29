@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "./deployers/SimpleGovernorFactory.sol";
-import "./deployers/DAOTokenFactory.sol";
-import "./deployers/DAOWrappedTokenFactory.sol";
-import "./deployers/OnChainProposerFactory.sol";
-import "./governor/SimpleGovernor.sol";
+import "./SimpleGovernorFactory.sol";
+import "./DAOTokenFactory.sol";
+import "./DAOWrappedTokenFactory.sol";
+import "./OnChainProposerFactory.sol";
+import "../governor/SimpleGovernor.sol";
 
 struct DaoData {
     string name;

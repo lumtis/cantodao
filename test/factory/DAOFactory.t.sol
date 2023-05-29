@@ -3,17 +3,17 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 
-import "../src/DAOFactory.sol";
-import "../src/proposer/OnChainProposer.sol";
-import "../src/votes/DAOToken.sol";
-import "../src/governor/SimpleGovernor.sol";
+import "../../src/factory/DAOFactory.sol";
+import "../../src/proposer/OnChainProposer.sol";
+import "../../src/votes/DAOToken.sol";
+import "../../src/governor/SimpleGovernor.sol";
 
-import "../src/deployers/SimpleGovernorFactory.sol";
-import "../src/deployers/DAOTokenFactory.sol";
-import "../src/deployers/DAOWrappedTokenFactory.sol";
-import "../src/deployers/OnChainProposerFactory.sol";
+import "../../src/factory/SimpleGovernorFactory.sol";
+import "../../src/factory/DAOTokenFactory.sol";
+import "../../src/factory/DAOWrappedTokenFactory.sol";
+import "../../src/factory/OnChainProposerFactory.sol";
 
-import "./mocks/Token.sol";
+import "../mocks/Token.sol";
 
 // Define constant for quorum fraction, voting delay, and voting period
 uint256 constant quorumFraction = 40;

@@ -2,11 +2,11 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../src/deployers/SimpleGovernorFactory.sol";
-import "../src/deployers/DAOTokenFactory.sol";
-import "../src/deployers/DAOWrappedTokenFactory.sol";
-import "../src/deployers/OnChainProposerFactory.sol";
-import "../src/DAOFactory.sol";
+import "../src/factory/SimpleGovernorFactory.sol";
+import "../src/factory/DAOTokenFactory.sol";
+import "../src/factory/DAOWrappedTokenFactory.sol";
+import "../src/factory/OnChainProposerFactory.sol";
+import "../src/factory/DAOFactory.sol";
 
 // DAOFactory script
 contract DAOFactoryScript is Script {
