@@ -6,9 +6,9 @@ import "forge-std/Test.sol";
 import "../src/DAOFactory.sol";
 import "../src/DAOProposer.sol";
 import "../src/DAOToken.sol";
-import "../src/DAOGovernor.sol";
+import "../src/governor/SimpleGovernor.sol";
 
-import "../src/deployers/DAOGovernorDeployer.sol";
+import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
@@ -23,7 +23,7 @@ uint constant minimalVotingPower = 1000;
 
 contract DAOFactoryNewTokenTest is Test {
     TokenMock assetToken;
-    DAOGovernorDeployer governorDeployer;
+    SimpleGovernorFactory governorFactory;
     DAOTokenDeployer tokenDeployer;
     DAOWrappedTokenDeployer wrappedTokenDeployer;
     DAOProposerDeployer proposerDeployer;
@@ -33,12 +33,12 @@ contract DAOFactoryNewTokenTest is Test {
         assetToken = new TokenMock("Asset", "AST");
         assetToken.mint(address(0x123), 1000);
 
-        governorDeployer = new DAOGovernorDeployer();
+        governorFactory = new SimpleGovernorFactory();
         tokenDeployer = new DAOTokenDeployer();
         wrappedTokenDeployer = new DAOWrappedTokenDeployer();
         proposerDeployer = new DAOProposerDeployer();
         factory = new DAOFactory(
-            IDAOGovernorDeployer(address(governorDeployer)),
+            ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer))
@@ -46,10 +46,7 @@ contract DAOFactoryNewTokenTest is Test {
     }
 
     function testInstantiated() public {
-        assertEq(
-            address(factory.governorDeployer()),
-            address(governorDeployer)
-        );
+        assertEq(address(factory.governorFactory()), address(governorFactory));
         assertEq(address(factory.tokenDeployer()), address(tokenDeployer));
         assertEq(
             address(factory.wrappedTokenDeployer()),
@@ -86,7 +83,7 @@ contract DAOFactoryNewTokenTest is Test {
         address newDao = factory.getDAO(0);
         assertEq(newDao, dao);
 
-        DAOGovernor governor = DAOGovernor(payable(dao));
+        SimpleGovernor governor = SimpleGovernor(payable(dao));
         assertEq(governor.name(), "daoTest");
         assertEq(governor.description(), "daoDescription");
         assertEq(governor.imageURL(), "daoImage");
@@ -133,7 +130,7 @@ contract DAOFactoryNewTokenTest is Test {
         newDao = factory.getDAO(1);
         assertEq(newDao, dao);
 
-        governor = DAOGovernor(payable(dao));
+        governor = SimpleGovernor(payable(dao));
         assertEq(governor.name(), "daoTest2");
         assertEq(governor.description(), "daoDescription2");
         assertEq(governor.imageURL(), "daoImage2");
@@ -174,7 +171,7 @@ contract DAOFactoryNewTokenTest is Test {
         address newDao = factory.getDAO(0);
         assertEq(newDao, dao);
 
-        DAOGovernor governor = DAOGovernor(payable(dao));
+        SimpleGovernor governor = SimpleGovernor(payable(dao));
         assertEq(governor.name(), "daoTest");
         assertEq(governor.description(), "daoDescription");
         assertEq(governor.imageURL(), "daoImage");
@@ -218,7 +215,7 @@ contract DAOFactoryNewTokenTest is Test {
         newDao = factory.getDAO(1);
         assertEq(newDao, dao);
 
-        governor = DAOGovernor(payable(dao));
+        governor = SimpleGovernor(payable(dao));
         assertEq(governor.name(), "daoTest2");
         assertEq(governor.description(), "daoDescription2");
         assertEq(governor.imageURL(), "daoImage2");

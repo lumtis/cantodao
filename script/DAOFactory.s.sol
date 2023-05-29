@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../src/deployers/DAOGovernorDeployer.sol";
+import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
@@ -15,14 +15,14 @@ contract DAOFactoryScript is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy deployers
-        DAOGovernorDeployer governorDeployer = new DAOGovernorDeployer();
+        SimpleGovernorFactory governorFactory = new SimpleGovernorFactory();
         DAOTokenDeployer tokenDeployer = new DAOTokenDeployer();
         DAOWrappedTokenDeployer wrappedTokenDeployer = new DAOWrappedTokenDeployer();
         DAOProposerDeployer proposerDeployer = new DAOProposerDeployer();
 
         // Deploy DAOFactory
         DAOFactory daoFactory = new DAOFactory(
-            IDAOGovernorDeployer(address(governorDeployer)),
+            ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer))

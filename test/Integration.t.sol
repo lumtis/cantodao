@@ -10,9 +10,9 @@ import "@openzeppelin/contracts/governance/IGovernor.sol";
 import "../src/DAOFactory.sol";
 import "../src/DAOProposer.sol";
 import "../src/DAOToken.sol";
-import "../src/DAOGovernor.sol";
+import "../src/governor/SimpleGovernor.sol";
 
-import "../src/deployers/DAOGovernorDeployer.sol";
+import "../src/deployers/SimpleGovernorFactory.sol";
 import "../src/deployers/DAOTokenDeployer.sol";
 import "../src/deployers/DAOWrappedTokenDeployer.sol";
 import "../src/deployers/DAOProposerDeployer.sol";
@@ -24,13 +24,13 @@ contract IntegrationTest is Test {
         Abstain
     }
 
-    DAOGovernorDeployer governorDeployer;
+    SimpleGovernorFactory governorFactory;
     DAOTokenDeployer tokenDeployer;
     DAOWrappedTokenDeployer wrappedTokenDeployer;
     DAOProposerDeployer proposerDeployer;
     DAOFactory factory;
 
-    DAOGovernor dao;
+    SimpleGovernor dao;
     DAOToken token;
     DAOProposer proposer;
 
@@ -41,12 +41,12 @@ contract IntegrationTest is Test {
         vm.startPrank(deployer);
 
         // Create factory
-        governorDeployer = new DAOGovernorDeployer();
+        governorFactory = new SimpleGovernorFactory();
         tokenDeployer = new DAOTokenDeployer();
         wrappedTokenDeployer = new DAOWrappedTokenDeployer();
         proposerDeployer = new DAOProposerDeployer();
         factory = new DAOFactory(
-            IDAOGovernorDeployer(address(governorDeployer)),
+            ISimpleGovernorFactory(address(governorFactory)),
             IDAOTokenDeployer(address(tokenDeployer)),
             IDAOWrappedTokenDeployer(address(wrappedTokenDeployer)),
             IDAOProposerDeployer(address(proposerDeployer))
@@ -78,7 +78,7 @@ contract IntegrationTest is Test {
             address tokenAddress,
             address proposerAddress
         ) = factory.createDAONewToken(data, tokenInfo, params, proposerInfo);
-        dao = DAOGovernor(payable(daoAddress));
+        dao = SimpleGovernor(payable(daoAddress));
         token = DAOToken(tokenAddress);
         proposer = DAOProposer(proposerAddress);
 

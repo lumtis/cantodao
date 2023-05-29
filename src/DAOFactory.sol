@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "./deployers/DAOGovernorDeployer.sol";
+import "./deployers/SimpleGovernorFactory.sol";
 import "./deployers/DAOTokenDeployer.sol";
 import "./deployers/DAOWrappedTokenDeployer.sol";
 import "./deployers/DAOProposerDeployer.sol";
-import "./DAOGovernor.sol";
+import "./governor/SimpleGovernor.sol";
 
 struct DaoData {
     string name;
@@ -39,8 +39,8 @@ struct DaoProposer {
 }
 
 contract DAOFactory {
-    // Deployer contracts
-    IDAOGovernorDeployer public governorDeployer;
+    // Factory contracts
+    ISimpleGovernorFactory public governorFactory;
     IDAOTokenDeployer public tokenDeployer;
     IDAOWrappedTokenDeployer public wrappedTokenDeployer;
     IDAOProposerDeployer public proposerDeployer;
@@ -50,12 +50,12 @@ contract DAOFactory {
     event DAOCreated(address indexed deployer, address dao);
 
     constructor(
-        IDAOGovernorDeployer _governorDeployer,
+        ISimpleGovernorFactory _governorFactory,
         IDAOTokenDeployer _tokenDeployer,
         IDAOWrappedTokenDeployer _wrappedTokenDeployer,
         IDAOProposerDeployer _proposerDeployer
     ) {
-        governorDeployer = _governorDeployer;
+        governorFactory = _governorFactory;
         tokenDeployer = _tokenDeployer;
         wrappedTokenDeployer = _wrappedTokenDeployer;
         proposerDeployer = _proposerDeployer;
@@ -86,7 +86,12 @@ contract DAOFactory {
         address token = _deployToken(_token);
 
         // Deploy the DAO governor
-        DAOGovernor dao = _deployDao(_data, _params, IVotes(token), proposer);
+        SimpleGovernor dao = _deployDao(
+            _data,
+            _params,
+            IVotes(token),
+            proposer
+        );
 
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
@@ -117,7 +122,12 @@ contract DAOFactory {
         address token = _deployWrappedToken(_wrappedToken);
 
         // Deploy the DAO governor
-        DAOGovernor dao = _deployDao(_data, _params, IVotes(token), proposer);
+        SimpleGovernor dao = _deployDao(
+            _data,
+            _params,
+            IVotes(token),
+            proposer
+        );
 
         // Set the governor to the proposer
         IDAOProposer(proposer).setGovernor(dao);
@@ -151,9 +161,9 @@ contract DAOFactory {
         DaoParams memory _params,
         IVotes _token,
         address _proposer
-    ) internal returns (DAOGovernor) {
+    ) internal returns (SimpleGovernor) {
         return
-            governorDeployer.deployDAOGovernor(
+            governorFactory.deployGovernor(
                 _data.name,
                 _data.description,
                 _data.image,
