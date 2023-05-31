@@ -13,7 +13,6 @@ import "./GovernorVotesQuorumFraction.sol";
  * @dev The simple governor is a regular governor with a voting module and a proposer module
  * The simple governor doesn't have a timelock and executes the passed proposal immediately
  * The simple governor stores regular metadata like description and image
- *
  */
 contract SimpleGovernor is
     Governor,
